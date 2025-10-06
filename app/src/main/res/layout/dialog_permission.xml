@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="32dp"
+    android:elevation="10dp"
+    android:background="@drawable/bg_white_r16"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/lato_medium"
+        android:gravity="center"
+        android:paddingTop="3dp"
+        android:text="@string/permission"
+        android:textColor="@color/black1_in_app"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lato_medium"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:text="@string/grant_per"
+        android:textColor="@color/neutral_500"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_r16"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvOke"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/lato_medium"
+            android:gravity="center"
+            android:paddingVertical="9dp"
+            android:text="@string/Go_to_setting"
+            android:textColor="@color/black_in_app"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>
