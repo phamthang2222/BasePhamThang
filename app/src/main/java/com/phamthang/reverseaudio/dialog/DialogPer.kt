@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.phamthang.reverseaudio.base.BaseDialogFragment
+import com.phamthang.reverseaudio.databinding.DialogPermissionBinding
+import com.phamthang.reverseaudio.extention.tap
 
 import kotlin.apply
 
