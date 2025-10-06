@@ -73,7 +73,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         binding = getViewDataBinding()
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[createViewModel()]
-        networkReceiver = NetworkReceiver {
+      /*  networkReceiver = NetworkReceiver {
             if (!it) {
                 showActivityCustom(NoInternetActivity::class.java, null)
             } else {
@@ -95,7 +95,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
             )
         } else {
             registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
-        }
+        }*/
         initView()
         bindViewModel()
         baseView()
@@ -284,7 +284,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(networkReceiver)
+//        unregisterReceiver(networkReceiver)
         SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.unregisterListener(it) }
     }
 
