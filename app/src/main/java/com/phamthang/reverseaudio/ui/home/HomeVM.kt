@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.phamthang.reverseaudio.R
 
 class HomeVM(application: Application) : AndroidViewModel(application) {
-    private val _selectedNav = MutableLiveData(-1)
+    private val _selectedNav = MutableLiveData(R.id.homeFragment)
     val selectedNav: LiveData<Int> = _selectedNav
 
 
