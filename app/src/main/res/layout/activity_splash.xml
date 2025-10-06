@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <ImageView
+        android:id="@+id/imgBackGround"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fitsSystemWindows="false"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintDimensionRatio="360:550"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.512" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6875" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:fitsSystemWindows="false"
+        android:scaleType="fitEnd"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgBackGround"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBackGround" />
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/lato_bold"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_30sdp"
+        android:shadowColor="#7AEFFF66"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="30"
+        android:text="@string/app_name"
+        android:textColor="#0061FE"
+        android:textSize="32sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/layout_load_ads"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imgLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/blue_in_app"
+        app:cardCornerRadius="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guideline">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_1sdp"
+            app:cardCornerRadius="@dimen/_11sdp">
+
+            <RelativeLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_info_outline_black_24px" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/layout_load_ads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="50dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/frAds"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tvPercent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center_horizontal"
+            android:text="@string/loading"
+            android:textColor="@color/neutral_800"
+            android:textSize="14sp"
+          />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:max="100"
+            android:progressTint="@color/blue_in_app"
+            app:indicatorColor="@color/blue_in_app"
+            app:trackColor="#D1D5DB"
+            app:trackCornerRadius="@dimen/_3sdp"
+            app:trackThickness="@dimen/_4sdp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/lato_regular"
+            android:gravity="center_horizontal"
+            android:text="@string/this_action_may_contain_advertising"
+            android:textColor="@color/neutral_800"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frAds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

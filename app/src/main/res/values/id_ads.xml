@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="link_server" translatable="false">https://</string>
+    <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="adjust_key" translatable="false"></string>
+    <string name="facebook_app_id" translatable="false"></string>
+    <string name="facebook_client_token" translatable="false"></string>
+</resources>

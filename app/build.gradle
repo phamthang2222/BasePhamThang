@@ -1,0 +1,160 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.gms.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotlin.ksp)
+    id("kotlin-parcelize")
+}
+
+android {
+    namespace 'com.phamthang.reverseaudio'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.phamthang.reverseaudio"
+        minSdk 24
+        targetSdk 35
+        versionCode 100
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        def formattedDate = new Date().format('MM.dd.yyyy')
+        archivesBaseName = "ReverseAudio_v${versionName}_${formattedDate}"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+
+    configurations {
+        configureEach {
+            exclude group: "com.google.android.play", module: "core"
+        }
+    }
+}
+
+dependencies {
+
+    // AndroidX & Google Material
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.databinding.runtime)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.multidex)
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.fragment.ktx
+
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    // Glide
+    implementation(libs.glide)
+
+    // SDP & SSP
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
+
+    // Ads & Mediation
+    implementation(libs.amazic.library)
+    implementation(libs.google.play.review)
+    implementation(libs.facebook.shimmer)
+    implementation(libs.google.play.services.ads)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.google.ads.mediation.facebook)
+    implementation(libs.google.ads.mediation.vungle)
+    implementation(libs.google.ads.mediation.applovin)
+    implementation(libs.google.ads.mediation.pangle)
+    implementation(libs.google.ads.mediation.ironsource)
+    implementation(libs.unity.ads)
+    implementation(libs.google.ads.mediation.unity)
+    implementation(libs.google.ads.mediation.mintegral)
+
+    // WorkManager (for Android 12+)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.runtime)
+
+    // Firebase
+//     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.firestore.ktx)
+
+    // Billing
+    implementation(libs.android.billing)
+
+    // Facebook SDK
+    implementation(libs.facebook.android.sdk)
+
+    // Retrofit & Gson
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // Utilities
+    implementation(libs.google.play.app.update)
+    implementation(libs.airbnb.lottie)
+    implementation(libs.greenrobot.eventbus)
+    implementation(libs.github.animatoo)
+
+    //dot indicator
+    implementation(libs.circular.indicator)
+
+    //other
+    implementation(libs.android.svg)
+    implementation(libs.exifinterface)
+    implementation(libs.recyclerview.animators)
+
+//    implementation(libs.leakcanary)
+}

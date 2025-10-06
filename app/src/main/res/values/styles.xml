@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#5A5A5A</item>
+        <item name="colorControlActivated">#FFF732</item>
+    </style>
+
+    <style name="DialpadNumberStyle">
+        <item name="android:textSize">28sp</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="NumberPadButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="shape_16dp">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="shape_10dp">
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="RoundedImageView2dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">2dp</item>
+    </style>
+
+    <style name="RoundedImageView4dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="RoundedImageView8dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="RoundedImageView10dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="RoundedImageView12dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+
+    <style name="RoundedImageView16dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="RoundedImageView20dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="RoundedImageView23dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">23dp</item>
+    </style>
+
+    <style name="RoundedImageView24dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="RoundedImageView46dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">46dp</item>
+    </style>
+
+    <style name="RoundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="RoundedImageView16dpStroke">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+        <item name="strokeColor">@color/neutral_800</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="AppProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTint">@color/blue_in_app</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">30dp</item>
+    </style>
+
+    <style name="NoUnderlineEditText">
+        <item name="background">@color/transparent</item>
+    </style>
+    <!--    seekbar-->
+
+    <style name="seekbarApp">
+        <item name="android:progressDrawable">@drawable/seekbar_progress_purple</item>
+        <item name="android:thumb">@drawable/seekbar_thumb_purple</item>
+        <item name="android:thumbOffset">0dp</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:max">100</item>
+        <item name="android:min" tools:ignore="NewApi">0</item>
+        <item name="android:maxHeight">4dp</item>
+        <item name="android:minHeight">4dp</item>
+    </style>
+
+
+    <style name="keypadButton" parent="@style/Widget.Material3.Button">
+        <item name="android:checkable">true</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:foreground">@drawable/rippleeffect</item>
+        <item name="fontFamily">@font/lato_bold</item>
+    </style>
+</resources>

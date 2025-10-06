@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name" translatable="false">Audio Revers</string>
+    <string name="empty" translatable="false" />
+
+    <string name="Go_to_setting">Go to setting</string>
+    <string name="Your_opinion_matter_to_us">Your Opinion Matter To Us!</string>
+    <string name="If_you_enjoy_our">If you enjoy our %s, would you mind rating us on the Google Play, then?</string>
+    <string name="not_now">Not now</string>
+    <string name="Rate_Us">Rate Us</string>
+    <string name="Please_feedback">Please feedback</string>
+    <string name="start">Start</string>
+    <string name="_continue">Continue</string>
+    <string name="this_app_needs_permissions_below_to_work_properly">This app needs permissions below to work properly</string>
+    <string name="language">Language</string>
+    <string name="this_action_may_contain_advertising">This action may contain advertising</string>
+    <string name="no_internet">No internet</string>
+    <string name="there_is_no_internet_connection_please_check_your_internet_connection">There is no internet connection! Please check your internet connection!</string>
+    <string name="try_again">Try again</string>
+    <string name="welcome">Welcome Back</string>
+    <string name="thank_you_for_choosing_us">Thank you for choosing us</string>
+    <string name="get_start_now">Get start now</string>
+    <string name="new_update_available">🚀 New Update Available!</string>
+    <string name="upgrade_now_for_a_smoother_experience_bug_fixes_for_better_performance">Upgrade now for a smoother experience, bug fixes for better performance. ⚡</string>
+    <string name="update_now">Update Now</string>
+    <string name="no">No</string>
+    <string name="update_application_fail">Update application fail!</string>
+    <string name="update_application_success">Update application success!</string>
+    <string name="request_update_application_fail">Request update application fail!</string>
+    <string name="can_t_update_scores_check_your_internet_connection">Can’t update scores – check your internet connection!</string>
+    <string name="updated_and_ready_welcome_back">Updated and ready – welcome back!</string>
+    <string name="loading">Loading (%1$d%%)…</string>
+    <string name="please_select_language_to_continue">Please select language to continue</string>
+    <string name="title_intro_1">A Modern Take on a Classic</string>
+    <string name="title_intro_2">Puzzles for Every Player</string>
+    <string name="title_intro_3">Track Your Progress</string>
+    <string name="title_intro_4">Challenge Your Brain</string>
+    <string name="content_intro_1">Sharpen your mind with this logic puzzle, perfect for\na quick break or a deep dive.</string>
+    <string name="content_intro_2">Choose your challenge from easy, medium, and hard\nlevels, and start playing now.</string>
+    <string name="content_intro_3">See how you improve over time with detailed stats\non your performance and history.</string>
+    <string name="content_intro_4">Give your brain a workout every day with\na fun, engaging puzzle.</string>
+    <string name="permission">Permission</string>
+    <string name="grant_per">Please grant full permissions for the best app experience.</string>
+    <string name="home">Home</string>
+    <string name="statistic">Statistic</string>
+    <string name="settings">Settings</string>
+
+
+</resources>
