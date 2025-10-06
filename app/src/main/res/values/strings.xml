@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Audio Revers</string>
+    <string name="app_name" translatable="false">Base</string>
     <string name="empty" translatable="false" />
 
     <string name="Go_to_setting">Go to setting</string>

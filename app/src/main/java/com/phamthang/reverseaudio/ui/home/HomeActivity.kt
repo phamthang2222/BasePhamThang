@@ -21,6 +21,5 @@ class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
      
     }
 
-   
 
 }
