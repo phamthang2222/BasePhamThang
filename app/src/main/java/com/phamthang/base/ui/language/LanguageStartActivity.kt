@@ -142,7 +142,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         lists.add(LanguageModel("Deutsch", "de", false, R.drawable.ic_german_flag))
         lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
         lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.ic_china_flag))
-        lists.add(LanguageModel("عربي ", "ar", false, R.drawable.ic_a_rap_flag))
+        lists.add(LanguageModel("عربي", "ar", false, R.drawable.ic_a_rap_flag))
         lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.ic_bengali_flag))
         lists.add(LanguageModel("Русский ", "ru", false, R.drawable.ic_russia_flag))
         lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.ic_turkey_flag))
