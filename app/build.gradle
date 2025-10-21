@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.phamthang.reverseaudio'
+    namespace 'com.phamthang.base'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.phamthang.reverseaudio"
+        applicationId "com.phamthang.base"
         minSdk 24
         targetSdk 35
         versionCode 100

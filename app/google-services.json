@@ -26,6 +26,25 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:927441427040:android:f8dfe9963b3a772ce5c105",
+        "android_client_info": {
+          "package_name": "com.phamthang.base"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBECk7Y4KrqH2TlCsXL0-EiBpSyhc1ymUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:927441427040:android:179b92ae2d948305e5c105",
         "android_client_info": {
           "package_name": "com.phamthang.lockbyvoice"

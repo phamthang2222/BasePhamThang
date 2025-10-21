@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_activity"
-    tools:context=".ui.home.HomeActivity">
+    tools:context="com.phamthang.base.ui.home.HomeActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcvHome"
@@ -29,7 +29,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/collapsible_banner_container_view">
 
-        <com.phamthang.reverseaudio.custome_view.BottomViewNav
+        <com.phamthang.base.custome_view.BottomViewNav
             android:id="@+id/home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -40,7 +40,7 @@
             app:iconBottomNav="@drawable/state_icon_home"
             app:textTitle="@string/home" />
 
-        <com.phamthang.reverseaudio.custome_view.BottomViewNav
+        <com.phamthang.base.custome_view.BottomViewNav
             android:id="@+id/statistic"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -51,7 +51,7 @@
             app:iconBottomNav="@drawable/state_icon_statistic"
             app:textTitle="@string/statistic" />
 
-        <com.phamthang.reverseaudio.custome_view.BottomViewNav
+        <com.phamthang.base.custome_view.BottomViewNav
             android:id="@+id/settings"
             android:layout_width="0dp"
             android:layout_height="match_parent"

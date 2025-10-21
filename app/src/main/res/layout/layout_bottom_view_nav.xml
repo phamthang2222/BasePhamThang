@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bgIcon" />
 
-    <com.phamthang.reverseaudio.custome_view.EllipsizeTextView
+    <com.phamthang.base.custome_view.EllipsizeTextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

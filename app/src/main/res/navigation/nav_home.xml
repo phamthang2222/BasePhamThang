@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.phamthang.reverseaudio.ui.home.framgent_home.HomeFragment"
+        android:name="com.phamthang.base.ui.home.framgent_home.HomeFragment"
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/statisticFragment"
-        android:name="com.phamthang.reverseaudio.ui.home.fragment_statistic.StatisticFragment"
+        android:name="com.phamthang.base.ui.home.fragment_statistic.StatisticFragment"
         android:label="StatisticFragment" >
         <action
             android:id="@+id/action_statisticFragment_to_settingsFragment"
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.phamthang.reverseaudio.ui.home.fragment_settings.SettingsFragment"
+        android:name="com.phamthang.base.ui.home.fragment_settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action

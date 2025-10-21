@@ -4,27 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/bg_activity">
 
 
     <ImageView
         android:id="@+id/imgBackGround"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:src="@drawable/bg_splash"
+        android:scaleType="fitStart"
+        app:layout_constraintDimensionRatio="360:800"
         android:fitsSystemWindows="false"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintDimensionRatio="360:550"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.512" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintGuide_percent="0.6875" />
 
     <ImageView
@@ -45,20 +45,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/lato_bold"
+        android:autoSizeMaxTextSize="36sp"
+        android:autoSizeMinTextSize="20sp"
+        android:autoSizeStepGranularity="2sp"
+        android:fontFamily="@font/inter_24pt_semibold"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/_30sdp"
+        android:layout_marginTop="16dp"
         android:shadowColor="#7AEFFF66"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="30"
         android:text="@string/app_name"
-        android:textColor="#0061FE"
-        android:textSize="32sp"
+        android:textColor="@color/black1_in_app"
+        android:textSize="28sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/layout_load_ads"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo" />
 
 
     <androidx.cardview.widget.CardView
@@ -67,18 +67,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="visible"
-        app:cardBackgroundColor="@color/blue_in_app"
-        app:cardCornerRadius="@dimen/_12sdp"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:cardBackgroundColor="@color/orange_in_app"
+        app:cardCornerRadius="@dimen/_17sdp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline">
+        app:layout_constraintTop_toTopOf="@+id/guideline">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/_1sdp"
-            app:cardCornerRadius="@dimen/_11sdp">
+            android:layout_margin="@dimen/_2sdp"
+            app:cardCornerRadius="@dimen/_17sdp">
 
             <RelativeLayout
                 android:layout_width="120dp"
@@ -87,7 +87,8 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_info_outline_black_24px" />
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/logo" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
@@ -111,12 +112,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-            android:fontFamily="@font/lato_bold"
+            android:fontFamily="@font/inter_24pt_bold"
             android:gravity="center_horizontal"
             android:text="@string/loading"
-            android:textColor="@color/neutral_800"
-            android:textSize="14sp"
-          />
+            android:textColor="@color/black1_in_app"
+            android:textSize="14sp" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress_indicator"
@@ -124,9 +124,9 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:max="100"
-            android:progressTint="@color/blue_in_app"
-            app:indicatorColor="@color/blue_in_app"
-            app:trackColor="#D1D5DB"
+            android:progressTint="@color/orange_in_app"
+            app:indicatorColor="@color/orange_in_app"
+            app:trackColor="#E5EFFF"
             app:trackCornerRadius="@dimen/_3sdp"
             app:trackThickness="@dimen/_4sdp" />
 
@@ -134,10 +134,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:fontFamily="@font/lato_regular"
+            android:fontFamily="@font/inter_24pt_bold"
             android:gravity="center_horizontal"
             android:text="@string/this_action_may_contain_advertising"
-            android:textColor="@color/neutral_800"
+            android:textColor="@color/black1_in_app"
             android:textSize="12sp" />
 
     </LinearLayout>
