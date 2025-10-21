@@ -25,5 +25,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Base"
+rootProject.name = "APP04_120FPS"
 include ':app'

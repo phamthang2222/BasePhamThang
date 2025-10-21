@@ -20,7 +20,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def formattedDate = new Date().format('MM.dd.yyyy')
-        archivesBaseName = "ReverseAudio_v${versionName}_${formattedDate}"
+        archivesBaseName = "APP04_120FPS_v${versionName}_${formattedDate}"
     }
 
     buildTypes {
