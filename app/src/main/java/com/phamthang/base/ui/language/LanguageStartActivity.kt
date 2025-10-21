@@ -113,8 +113,8 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         val key: String = SystemUtil.getPreLanguage(this)
         Log.d("CHECK_systemLang", " key: ${key}")
 
-
-        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.flag_china))
+        //flag retangle
+       /* lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.flag_china))
         lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.flag_china))
         lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.flag_hindi))
         lists.add(LanguageModel("English", "en", false, R.drawable.flag_en))
@@ -129,7 +129,25 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         lists.add(LanguageModel("日本語", "ja", false, R.drawable.flag_japan))
         lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.flag_turkiye))
         lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.flag_korean))
-        lists.add(LanguageModel("Indonesian", "in", false, R.drawable.flag_indonesia))
+        lists.add(LanguageModel("Indonesian", "in", false, R.drawable.flag_indonesia))*/
+
+        //flag circle
+        lists.add(LanguageModel("Español", "es", false, R.drawable.ic_span_flag))
+        lists.add(LanguageModel("Français", "fr", false, R.drawable.ic_french_flag))
+        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.ic_hindi_flag))
+        lists.add(LanguageModel("English", "en", false, R.drawable.ic_english_flag))
+        lists.add(LanguageModel("Português (Brazil)", "pt-rBR", false, R.drawable.ic_brazil_flag))
+        lists.add(LanguageModel("Português (Portu)", "pt-rPT", false, R.drawable.ic_portuguese_flag))
+        lists.add(LanguageModel("日本語", "ja", false, R.drawable.ic_japan_flag))
+        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.ic_german_flag))
+        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
+        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.ic_china_flag))
+        lists.add(LanguageModel("عربي ", "ar", false, R.drawable.ic_a_rap_flag))
+        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.ic_bengali_flag))
+        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.ic_russia_flag))
+        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.ic_turkey_flag))
+        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.ic_korean_flag))
+        lists.add(LanguageModel("Indonesia", "in", false, R.drawable.ic_indo_flag))
         val selectedLanguage = SharedPrefManager.getBoolean(SharedPrefManager.SELECTED_LANGUAGE, false)
         if (selectedLanguage) {
             val systemLangModel = lists.find { it.isoLanguage.contains(key) }
