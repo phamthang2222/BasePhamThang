@@ -146,14 +146,11 @@ dependencies {
     implementation(libs.google.play.app.update)
     implementation(libs.airbnb.lottie)
     implementation(libs.greenrobot.eventbus)
-    implementation(libs.github.animatoo)
 
     //dot indicator
     implementation(libs.circular.indicator)
 
     //other
-    implementation(libs.android.svg)
-    implementation(libs.exifinterface)
     implementation(libs.recyclerview.animators)
 
 //    implementation(libs.leakcanary)
