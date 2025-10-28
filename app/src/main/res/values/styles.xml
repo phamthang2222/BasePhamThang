@@ -127,6 +127,16 @@
         <item name="android:minHeight">4dp</item>
     </style>
 
+    <style name="CheckBoxMain" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@color/orange_in_app</item>
+        <item name="buttonIconTintMode">add</item>
+    </style>
+
+    <style name="RadioButtonMain" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#787B82</item>
+        <item name="colorControlActivated">@color/orange_in_app</item>
+    </style>
+
 
     <style name="keypadButton" parent="@style/Widget.Material3.Button">
         <item name="android:checkable">true</item>

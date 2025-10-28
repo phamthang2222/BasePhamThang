@@ -44,7 +44,6 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
 
         binding.rclLanguage.adapter = adapter
 
-
     }
 
     override fun bindViewModel() {
@@ -72,23 +71,22 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
         val systemLang: String = Resources.getSystem().configuration.locales[0].language
         Log.d("CHECK_systemLang", "systemLang: ${systemLang} ")
 
-        lists.add(LanguageModel("Français", "fr", false, R.drawable.flag_fra))
-        lists.add(LanguageModel("Español", "es", false, R.drawable.flag_span))
-        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.flag_hindi))
-        lists.add(LanguageModel("English", "en", false, R.drawable.flag_en))
-        lists.add(LanguageModel("Portuguese (Brazil)", "pt-rBR", false, R.drawable.flag_port_brazil))
-        lists.add(LanguageModel("Portuguese (Portugal)", "pt-rPT", false, R.drawable.flag_port_portu))
-        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.flag_china))
-        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.flag_china))
-        lists.add(LanguageModel("عربي", "ar", false, R.drawable.flag_a_rap))
-        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.flag_bengali))
-        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.flag_russia))
-        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.flag_ger))
-        lists.add(LanguageModel("日本語", "ja", false, R.drawable.flag_japan))
-        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.flag_turkiye))
-        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.flag_korean))
-        lists.add(LanguageModel("Indonesian", "in", false, R.drawable.flag_indonesia))
-
+        lists.add(LanguageModel("Español", "es", false, R.drawable.ic_span_flag))
+        lists.add(LanguageModel("Français", "fr", false, R.drawable.ic_french_flag))
+        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.ic_hindi_flag))
+        lists.add(LanguageModel("English", "en", false, R.drawable.ic_english_flag))
+        lists.add(LanguageModel("Português (Brazil)", "pt-rBR", false, R.drawable.ic_brazil_flag))
+        lists.add(LanguageModel("Português (Portu)", "pt-rPT", false, R.drawable.ic_portuguese_flag))
+        lists.add(LanguageModel("日本語", "ja", false, R.drawable.ic_japan_flag))
+        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.ic_german_flag))
+        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
+        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.ic_china_flag))
+        lists.add(LanguageModel("عربي", "ar", false, R.drawable.ic_a_rap_flag))
+        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.ic_bengali_flag))
+        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.ic_russia_flag))
+        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.ic_turkey_flag))
+        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.ic_korean_flag))
+        lists.add(LanguageModel("Indonesia", "in", false, R.drawable.ic_indo_flag))
 
         for (model in lists) {
             if (model.isoLanguage == key) {

@@ -127,7 +127,6 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 google-play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "appUpdate" }
 airbnb-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 greenrobot-eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventbus" }
-github-animatoo = { group = "com.github.AtifSayings", name = "Animatoo", version.ref = "animatoo" }
 
 #indicator
 circular-indicator = { group = "com.tbuonomo", name = "dotsindicator", version.ref = "dotIndicator" }
@@ -136,9 +135,6 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
 #other
-leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version = "2.10" }
-android_svg = { group = "com.caverock", name = "androidsvg", version = "1.4" }
-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version = "1.4.1" }
 recyclerview_animators = {group= "jp.wasabeef", name ="recyclerview-animators", version = "4.0.2"}
 
 
