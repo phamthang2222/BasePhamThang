@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -55,6 +56,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         SystemUtil.setLocale(this)
         hideNavigationBar()
+
         super.onCreate(savedInstanceState)
         binding = getViewDataBinding()
         setContentView(binding.root)
@@ -310,6 +312,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
 
 
     private fun hideNavigationBar() {
+        enableEdgeToEdge()
         window.hideNavigation()
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         this@BaseActivity.window.setFlags(

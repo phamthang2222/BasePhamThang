@@ -93,4 +93,15 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         _binding = null
     }
 
+    fun showDialog(manager: androidx.fragment.app.FragmentManager,tag : String = "") {
+        if (!isAdded  && !isResumed) {
+            show(manager, "")
+        }
+    }
+
+    fun dismissDialog() {
+        if (isAdded && isResumed) {
+            dismiss()
+        }
+    }
 }

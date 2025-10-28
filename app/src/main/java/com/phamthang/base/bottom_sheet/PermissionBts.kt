@@ -123,7 +123,7 @@ class PermissionBts(
         }
 
         if (permissionToShowRationale != null) {
-            dialog.show(requireActivity().supportFragmentManager, "dialog")
+            dialog.showDialog(requireActivity().supportFragmentManager)
         } else {
             permissionLauncher.launch(permissionsToRequest)
         }
@@ -156,7 +156,7 @@ class PermissionBts(
                         perm
                     )
                 }) {
-                dialog.show(requireActivity().supportFragmentManager, "dialog_storage")
+                dialog.showDialog(requireActivity().supportFragmentManager)
             }
             return
         }
@@ -164,7 +164,7 @@ class PermissionBts(
         permissions.entries.forEach { (permission, isGranted) ->
             updateSwitchStateForPermission(permission, isGranted)
             if (!isGranted && !PermissionManager.shouldShowRequestPermissionRationale(requireActivity(), permission)) {
-                dialog.show(requireActivity().supportFragmentManager, "dialog_single")
+                dialog.showDialog(requireActivity().supportFragmentManager)
             }
         }
     }

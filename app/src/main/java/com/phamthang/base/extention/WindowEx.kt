@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.phamthang.base.R
 
 fun Window.hideNavigation() {
-    this.setStatusBarColorRes()
     if (setFullScreenWallpaper()) return
     decorView.viewTreeObserver.addOnGlobalLayoutListener {
         val rect = Rect()
