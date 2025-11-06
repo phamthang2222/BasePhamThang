@@ -2,7 +2,6 @@ package com.phamthang.base.extention
 
 import android.graphics.Bitmap
 import android.os.Environment
-import com.phamthang.base.extention.extention.logError
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
