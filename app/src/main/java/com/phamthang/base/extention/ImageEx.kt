@@ -108,7 +108,7 @@ fun ImageView.loadImageFromUrl(
 
     Glide.with(this.context)
         .load(imageUrl)
-        .placeholder(R.drawable.bg_btn_ads)
+        .placeholder(R.drawable.bg_thumbnail_df)
         .downsample(DownsampleStrategy.AT_LEAST)
         .listener(object : RequestListener<Drawable> {
             override fun onLoadFailed(

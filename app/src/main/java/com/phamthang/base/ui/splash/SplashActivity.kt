@@ -25,12 +25,12 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.extention.toast
-import com.phamthang.base.ui.language.LanguageStartActivity
 import com.phamthang.base.ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.welcome_back.WelcomeBackActivity
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
 import com.phamthang.base.databinding.ActivitySplashBinding
+import com.phamthang.base.ui.language.LanguageStartActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,8 +50,10 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
         var isCloseSplashAds = false
         var appUpdateManager: AppUpdateManager? = null
         var installStateUpdatedListener: InstallStateUpdatedListener? = null
-        var nativeLanguagePreload: NativeAd? = null
+        var nativeLanguageMainPreload: NativeAd? = null
+        var nativeLanguageClickPreload: NativeAd? = null
         var isShowNativeLanguagePreloadAtSplash = false
+        var isShowNativeLanguageClickPreloadAtSplash = false
     }
 
     private val openCallback = object : AppOpenCallback() {
@@ -217,6 +219,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
                 this@SplashActivity, this@SplashActivity, lifecycleScope,
                 onAsyncSplashDone = {
                     preloadANativeMainLanguage()
+                    preloadANativeClickLanguage()
                 },
                 onNoInternetAction = {
                     interCallback.onNextAction()
@@ -267,7 +270,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
             object : NativeCallback() {
                 override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                     super.onNativeAdLoaded(nativeAd)
-                    nativeLanguagePreload = nativeAd
+                    nativeLanguageMainPreload = nativeAd
                 }
 
                 override fun onAdImpression() {
@@ -275,6 +278,23 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
                     isShowNativeLanguagePreloadAtSplash = true
                 }
             }, Constants.RemoteKeys.native_language
+        )
+    }
+    private fun preloadANativeClickLanguage() {
+        Admob.getInstance().loadNativeAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(Constants.AdsKey.native_click),
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                    super.onNativeAdLoaded(nativeAd)
+                    nativeLanguageClickPreload = nativeAd
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    isShowNativeLanguageClickPreloadAtSplash = true
+                }
+            }, Constants.RemoteKeys.native_click
         )
     }
 

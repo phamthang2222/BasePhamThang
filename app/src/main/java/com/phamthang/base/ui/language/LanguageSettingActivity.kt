@@ -1,27 +1,26 @@
 package com.phamthang.base.ui.language
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.content.edit
 import com.phamthang.base.base.BaseActivity
-import com.phamthang.base.extention.visible
+import com.phamthang.base.extention.logDebug
 import com.phamthang.base.ui.home.HomeActivity
+import com.phamthang.base.ui.language.adapter.LanguageAdapter
+import com.phamthang.base.ui.language.model.LanguageModel
+import com.phamthang.base.ui.language.model.LanguageSubModel
+import com.phamthang.base.utils.DataProject
 import com.phamthang.base.utils.SystemUtil
-import com.phamthang.base.R
 import com.phamthang.base.databinding.ActivityLanguageSettingBinding
-import java.util.Locale
+import com.phamthang.base.utils.Constants
 
 
-class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguageSettingBinding>(), IClickLanguage {
+class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguageSettingBinding>() {
 
     private var adapter: LanguageAdapter? = null
-    private var model: LanguageModel = LanguageModel()
+    private var model : Any? = null
     private var sharedPreferences: SharedPreferences? = null
     private var currentLanguage : LanguageModel? = null
 
@@ -32,18 +31,30 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
     override fun getViewDataBinding(): ActivityLanguageSettingBinding = ActivityLanguageSettingBinding.inflate(layoutInflater)
 
     override fun initView() {
-
         sharedPreferences = getSharedPreferences("MY_PRE", MODE_PRIVATE)
-
-        adapter = LanguageAdapter(
-            this,
-            setLanguageDefault(),
-            this,
-            false
-        )
-
+        setUpListLang()
         binding.rclLanguage.adapter = adapter
 
+//        loadBannerAds(binding.bannerContainerView, Constants.AdsKey.banner_setting)
+    }
+
+    private fun setUpListLang() {
+        adapter = LanguageAdapter(
+            setLanguageDefault(),
+            onClickSubLanguage = {
+                binding.ivDone.alpha = 1f
+                binding.ivDone.isEnabled = true
+                model = it
+            },
+            onClickDropDown = {
+                logDebug(message = "ChekClickLFO: onClickDropDown")
+            },
+            onClickSingleLanguage = {
+                logDebug(message = "ChekClickLFO: onClickSingleLanguage: ${it.languageName}-${it.isoLanguage}")
+                model = it
+            }
+        )
+        binding.rclLanguage.adapter = adapter
     }
 
     override fun bindViewModel() {
@@ -54,94 +65,50 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
         finish()
     }
 
-    override fun onClick(data: LanguageModel) {
-        model = data
-        model = data
-        val isArabic = model.isoLanguage == "ar"
-        window.decorView.layoutDirection = if(isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
-        binding.tvLanguage.text = getLocalizedString(this, model.isoLanguage, R.string.language)
-
-        binding.ivDone.visible()
-
-    }
 
     private fun setLanguageDefault(): List<LanguageModel> {
-        val lists: MutableList<LanguageModel> = ArrayList()
-        val key: String = SystemUtil.getPreLanguage(this)
-        val systemLang: String = Resources.getSystem().configuration.locales[0].language
-        Log.d("CHECK_systemLang", "systemLang: ${systemLang} ")
-
-        lists.add(LanguageModel("Español", "es", false, R.drawable.ic_span_flag))
-        lists.add(LanguageModel("Français", "fr", false, R.drawable.ic_french_flag))
-        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.ic_hindi_flag))
-        lists.add(LanguageModel("English", "en", false, R.drawable.ic_english_flag))
-        lists.add(LanguageModel("Português (Brazil)", "pt-rBR", false, R.drawable.ic_brazil_flag))
-        lists.add(LanguageModel("Português (Portu)", "pt-rPT", false, R.drawable.ic_portuguese_flag))
-        lists.add(LanguageModel("日本語", "ja", false, R.drawable.ic_japan_flag))
-        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.ic_german_flag))
-        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
-        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.ic_china_flag))
-        lists.add(LanguageModel("عربي", "ar", false, R.drawable.ic_a_rap_flag))
-        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.ic_bengali_flag))
-        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.ic_russia_flag))
-        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.ic_turkey_flag))
-        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.ic_korean_flag))
-        lists.add(LanguageModel("Indonesia", "in", false, R.drawable.ic_indo_flag))
-
-        for (model in lists) {
-            if (model.isoLanguage == key) {
-                this.model = model
-            }
-        }
-
-        for (i in lists.indices) {
-            if (!sharedPreferences!!.getBoolean("nativeLanguage", false)) {
-                if (key == lists[i].isoLanguage) {
-                    val data = lists[i]
-                    currentLanguage = data
-                    data.isCheck = true
-                    lists.remove(lists[i])
-                    lists.add(0, data)
-                    break
+        val lists: MutableList<LanguageModel> = DataProject.listLanguage()
+        var data: LanguageModel? = null
+        lists.forEach { languageModel ->
+            if(languageModel.listLanguageSubModel.isNotEmpty()){
+                languageModel.listLanguageSubModel.forEach { languageSubModel ->
+                    if (languageSubModel.languageName == SystemUtil.getPreLanguageName(this)) {
+                        this.model = languageSubModel
+                        data = languageModel
+                        languageSubModel.isCheck = true
+                    }
                 }
-            } else {
-                if (key == lists[i].isoLanguage) {
-                    lists[i].isCheck = true
+            }else{
+                if(languageModel.languageName == SystemUtil.getPreLanguageName(this)){
+                    this.model = languageModel
+                    data = languageModel
+                    languageModel.isCheck = true
                 }
             }
         }
-
+        data?.let {
+            lists.remove(it)
+            lists.add(0, it)
+        }
         return lists
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     fun ivDone(v: View) {
-        val editor: SharedPreferences.Editor =
-            getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
-        editor.putBoolean("openLanguage", true)
-        editor.apply()
-        SystemUtil.setPreLanguage(this@LanguageSettingActivity, model.isoLanguage)
+        getSharedPreferences("MY_PRE", MODE_PRIVATE).edit() { putBoolean("openLanguage", true) }
+        if(model is LanguageSubModel){
+            SystemUtil.setPreLanguage(this@LanguageSettingActivity, (model as LanguageSubModel).isoLanguage)
+            SystemUtil.setPreLanguageName(this, (model as LanguageSubModel).languageName)
+        }else{
+            SystemUtil.setPreLanguage(this@LanguageSettingActivity, (model as LanguageModel).isoLanguage)
+            SystemUtil.setPreLanguageName(this, (model as LanguageModel).languageName)
+        }
         SystemUtil.setLocale(this)
         startNextAct()
     }
 
     private fun startNextAct() {
-        val intent = Intent(this, HomeActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun getLocalizedString(context: Context, languageCode: String, resId: Int): String {
-        val localeParts = languageCode.split("-")
-        val myLocale = if (localeParts.size > 1) {
-            Locale(localeParts[0], localeParts[1])
-        } else {
-            Locale(languageCode)
-        }
-        val config = Configuration(context.resources.configuration)
-        config.setLocale(myLocale)
-        val localizedContext = context.createConfigurationContext(config)
-        return localizedContext.resources.getString(resId)
+        showActivity(HomeActivity::class.java, null)
+        finishAffinity()
     }
 }

@@ -27,52 +27,6 @@
         <attr name="filled_dot_drawable" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="SeekBarPreference">
-        <attr name="min" format="integer"/>
-        <attr name="max" format="integer"/>
-        <attr name="value" format="integer"/>
-        <attr name="valueFormat" format="string"/>
-    </declare-styleable>
 
-    <declare-styleable name="SudokuBoardView">
-        <attr name="colorText" format="color"/>
-        <attr name="colorLine" format="color"/>
-        <attr name="colorSectorLine" format="color"/>
 
-        <!-- Cell is editable, contains text or marks -->
-        <attr name="colorValueText" format="color"/>
-        <attr name="colorMarksText" format="color"/>
-        <attr name="colorBackground" format="color"/>
-
-        <!-- Cell is not editable, contains a valid value -->
-        <attr name="colorReadOnlyText" format="color"/>
-        <attr name="colorReadOnlyBackground" format="color"/>
-
-        <!-- Cell is being touched -->
-        <attr name="colorTouchedText" format="color"/>
-        <attr name="colorTouchedMarksText" format="color"/>
-        <attr name="colorTouchedBackground" format="color"/>
-
-        <!-- Cell is selected (color of the selection frame) -->
-        <attr name="colorSelectedCellFrame" format="color"/>
-
-        <!-- Cell is highlighted -->
-        <attr name="colorHighlightedText" format="color"/>
-        <attr name="colorHighlightedMarksText" format="color"/>
-        <attr name="colorHighlightedBackground" format="color"/>
-
-        <!-- Cell is editable, contains an invalid value -->
-        <attr name="colorInvalidText" format="color"/>
-        <attr name="colorInvalidBackground" format="color"/>
-
-        <!-- Cell is editable, contains text or marks, is in an even numbered box -->
-        <attr name="colorEvenText" format="color"/>
-        <attr name="colorEvenMarksText" format="color"/>
-        <attr name="colorEvenBackground" format="color"/>
-    </declare-styleable>
-
-    <declare-styleable name="NumberButton">
-        <!-- True if all numbers for this button are placed -->
-        <attr name="all_numbers_placed" format="boolean"/>
-    </declare-styleable>
 </resources>

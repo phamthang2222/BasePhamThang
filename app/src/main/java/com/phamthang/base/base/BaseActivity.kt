@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +16,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
+import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.amazic.library.ads.banner_ads.BannerBuilder
+import com.amazic.library.ads.banner_ads.BannerManager
+import com.amazic.library.ads.callback.InterCallback
+import com.amazic.library.ads.callback.RewardedCallback
+import com.amazic.library.ads.collapse_banner_ads.CollapseBannerBuilder
 import com.amazic.library.ads.collapse_banner_ads.CollapseBannerManager
+import com.amazic.library.ads.inter_ads.InterManager
+import com.amazic.library.ads.native_ads.NativeBuilder
 import com.amazic.library.ads.native_ads.NativeManager
+import com.amazic.library.ads.reward_ads.RewardManager
 import com.google.android.play.core.install.model.InstallStatus
 import com.phamthang.base.custome_view.LoadingView
 import com.phamthang.base.extention.hideNavigation
@@ -104,7 +115,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     }
 
 
-    /*fun loadCollapseBanner(adsKey: String, remoteKey: String) {
+    fun loadCollapseBanner(adsKey: String, remoteKey: String) {
         val frContainerAds = findViewById<FrameLayout>(R.id.collapsible_banner_container_view)
         if (frContainerAds != null && Admob.getInstance().checkCondition(this, remoteKey)) {
             val collapseBannerBuilder = CollapseBannerBuilder()
@@ -139,17 +150,18 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         idLayoutNative: Int,
         idLayoutShimmer: Int,
         idNativeMeta: Int = idLayoutNative
-    ) {
+    ) : NativeManager? {
         val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idNativeMeta, true)
         nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
         //set secondary list id ads if load double native
         nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
-        nativeManager = NativeManager(this, this, nativeBuilder, remoteKeyMain, remoteKeySecondary)
-        nativeManager?.timeOutCallAds = 12000
-        nativeManager?.setIntervalReloadNative(
+       val nativeManager = NativeManager(this, this, nativeBuilder, remoteKeyMain, remoteKeySecondary)
+        nativeManager.timeOutCallAds = 12000
+        nativeManager.setIntervalReloadNative(
             RemoteConfigHelper.getInstance().get_config_long(this, Constants.RemoteKeys.interval_reload_native) * 1000
         )
-        nativeManager?.setAlwaysReloadOnResume(true)
+        nativeManager.setAlwaysReloadOnResume(true)
+        return  nativeManager
     }
 
     fun loadNativeAll(
@@ -268,7 +280,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
             },
             isReloadAfterShow
         )
-    }*/
+    }
 
     override fun onDestroy() {
         super.onDestroy()

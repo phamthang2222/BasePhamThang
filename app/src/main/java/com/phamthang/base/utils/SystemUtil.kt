@@ -56,17 +56,7 @@ object SystemUtil {
 
     fun getPreLanguage(mContext: Context): String {
         val preferences = mContext.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE)
-        Locale.getDefault().displayLanguage
-        val lang = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Resources.getSystem().configuration.locales[0].language
-        } else {
-            Resources.getSystem().configuration.locale.language
-        }
-        if (!languageApp.contains(lang)) {
-            return preferences.getString("KEY_LANGUAGE", "en")!!
-        } else {
-            return preferences.getString("KEY_LANGUAGE", lang)!!
-        }
+        return preferences.getString("KEY_LANGUAGE", "").toString()
     }
 
     fun getPreLanguageSplash(): String {
@@ -76,7 +66,12 @@ object SystemUtil {
             Resources.getSystem().configuration.locale.language
         }
 
-        return if (!languageApp.contains(defaultLang)) "en" else defaultLang
+        return if (!getLanguageApp().contains(defaultLang)) "en" else defaultLang
+    }
+
+    fun getPreLanguageName(context: Context): String {
+        val preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE)
+        return preferences.getString("KEY_LANGUAGE_NAME", "")!!
     }
 
 
@@ -89,29 +84,26 @@ object SystemUtil {
         }
     }
 
-    private val languageApp: List<String>
-        get() {
-            val languages: MutableList<String> = ArrayList()
-            languages.add("en")
-            languages.add("hi")
-            languages.add("es")
-            languages.add("fr")
-            languages.add("de")
-            languages.add("in")
-            languages.add("ar")
-            languages.add("bn")
-            languages.add("ja")
-            languages.add("ko")
-            languages.add("ru")
-            languages.add("tr")
-            languages.add("pt-rBR")
-            languages.add("pt-rPT")
-            languages.add("zh-rCN")
-            languages.add("zh-rTW")
-            languages.add("zh")
-            languages.add("pt")
+    fun setPreLanguageName(context: Context, languageName: String?) {
+        val preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE)
+        preferences.edit().putString("KEY_LANGUAGE_NAME", languageName).apply()
+    }
 
-            return languages
-        }
+    fun getLanguageApp(): MutableList<String?> {
+        val languages: MutableList<String?> = ArrayList<String?>()
+        languages.add("en")
+        languages.add("hi")
+        languages.add("es")
+        languages.add("fr")
+        languages.add("de")
+        languages.add("in")
+        languages.add("pt")
+        languages.add("sw")
+        languages.add("am")
+        languages.add("zu")
+        languages.add("yo")
+        languages.add("af")
+        return languages
+    }
 
 }

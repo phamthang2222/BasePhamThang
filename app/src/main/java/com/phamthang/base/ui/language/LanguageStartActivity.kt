@@ -4,35 +4,47 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
+import com.amazic.library.ads.admob.AdmobApi
+import com.amazic.library.ads.callback.BannerCallback
 import com.amazic.library.ads.callback.InterCallback
+import com.amazic.library.ads.callback.NativeCallback
 import com.amazic.library.organic.TechManager
 import com.phamthang.base.extention.setEnableState
 import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.phamthang.base.base.BaseActivity
+import com.phamthang.base.extention.logDebug
 import com.phamthang.base.extention.tap
-import com.phamthang.base.extention.visible
 import com.phamthang.base.share_pref.SharedPrefManager
+import com.phamthang.base.ui.language.adapter.LanguageAdapter
+import com.phamthang.base.ui.language.model.LanguageModel
+import com.phamthang.base.ui.language.model.LanguageSubModel
 import com.phamthang.base.ui.splash.SplashActivity
 import com.phamthang.base.ui.tutorial.TutorialActivity
 import com.phamthang.base.utils.Constants
+import com.phamthang.base.utils.DataProject
 import com.phamthang.base.utils.SystemUtil
 import com.phamthang.base.R
 import com.phamthang.base.databinding.ActivityLanguageBinding
+import com.phamthang.base.ui.splash.SplashActivity.Companion.isShowNativeLanguageClickPreloadAtSplash
+import com.phamthang.base.ui.splash.SplashActivity.Companion.nativeLanguageClickPreload
+import com.phamthang.base.ui.splash.SplashActivity.Companion.nativeLanguageMainPreload
+import com.phamthang.base.utils.Constants.AdsKey.inter_splash
+import com.phamthang.base.utils.Constants.AdsKey.native_intro
 import java.util.Locale
 
-class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBinding>(),
-    IClickLanguage {
-    private var firstClick = true
+
+class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBinding>() {
     private var adapter: LanguageAdapter? = null
-    private var model: LanguageModel = LanguageModel()
-    private var isPause = false
-    private var countOpenSplash = 1L
+    private var model: Any? = null
     private var isChooseLanguage = false
+    private var isPause = false
+    private val TAG = "LanguageStartActivity"
+    private var countOpenSplash = 1L
 
     companion object {
         var isLogEventLanguageUserView = false
@@ -45,7 +57,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     override fun getViewDataBinding(): ActivityLanguageBinding = ActivityLanguageBinding.inflate(layoutInflater)
 
     override fun initView() {
-
         countOpenSplash = RemoteConfigHelper.getInstance().get_config_long(this, "countOpenSplash")
         if (!RemoteConfigHelper.getInstance().get_config(this, "isLogEventLanguageFO")) {
             EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_open)
@@ -55,18 +66,13 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
             }
         }
 
-        binding.ivDone.setEnableState(false,0f)
-        adapter = LanguageAdapter(
-            this,
-            setLanguageDefault(),
-            this,
-            true,
-        )
+        binding.ivDone.setEnableState(false, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
         binding.rclLanguage.adapter = adapter
         binding.ivBack.tap {
             onBackPressCustom()
         }
-
+        setUpListLang()
+        loadBannerSettingForTech()
         loadNativeLanguage()
     }
 
@@ -108,77 +114,95 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         isPause = true
     }
 
-    private fun setLanguageDefault(): List<LanguageModel> {
-        val lists: MutableList<LanguageModel> = ArrayList()
-        val key: String = SystemUtil.getPreLanguage(this)
-        Log.d("CHECK_systemLang", " key: ${key}")
+    private fun setUpListLang() {
+        val nativeManager = loadNative(
+            frAds = binding.frAds,
+            remoteKeyMain = Constants.RemoteKeys.native_language,
+            remoteKeySecondary = Constants.RemoteKeys.native_language_2,
+            adsKeyMain = Constants.AdsKey.native_language,
+            adsKeySecondary = Constants.AdsKey.native_language_2,
+            idLayoutShimmer = R.layout.shimmer_native_large_with_button_above,
+            idLayoutNative = R.layout.native_large_ads_with_button_above,
+        )
 
-        //flag retangle
-       /* lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.flag_china))
-        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.flag_china))
-        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.flag_hindi))
-        lists.add(LanguageModel("English", "en", false, R.drawable.flag_en))
-        lists.add(LanguageModel("Portuguese (Brazil)", "pt-rBR", false, R.drawable.flag_port_brazil))
-        lists.add(LanguageModel("Portuguese (Portugal)", "pt-rPT", false, R.drawable.flag_port_portu))
-        lists.add(LanguageModel("Français", "fr", false, R.drawable.flag_fra))
-        lists.add(LanguageModel("Español", "es", false, R.drawable.flag_span))
-        lists.add(LanguageModel("عربي", "ar", false, R.drawable.flag_a_rap))
-        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.flag_bengali))
-        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.flag_russia))
-        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.flag_ger))
-        lists.add(LanguageModel("日本語", "ja", false, R.drawable.flag_japan))
-        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.flag_turkiye))
-        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.flag_korean))
-        lists.add(LanguageModel("Indonesian", "in", false, R.drawable.flag_indonesia))*/
+        adapter = LanguageAdapter(
+            setLanguageDefault(),
+            onClickSubLanguage = {
+                logDebug(message = "ChekClickLFO: onClickSubLanguage: ${it.languageName}-${it.isoLanguage} ")
+                binding.ivDone.alpha = 1f
+                binding.ivDone.isEnabled = true
+                EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose)
+                if (!isChooseLanguage) {
+                    if (countOpenSplash <= 10) {
+                        EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose + "_${countOpenSplash}")
+                    }
+                }
+                isChooseLanguage = true
+                binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
+                model = it
 
-        //flag circle
-        lists.add(LanguageModel("Español", "es", false, R.drawable.ic_span_flag))
-        lists.add(LanguageModel("Français", "fr", false, R.drawable.ic_french_flag))
-        lists.add(LanguageModel("हिन्दी", "hi", false, R.drawable.ic_hindi_flag))
-        lists.add(LanguageModel("English", "en", false, R.drawable.ic_english_flag))
-        lists.add(LanguageModel("Português (Brazil)", "pt-rBR", false, R.drawable.ic_brazil_flag))
-        lists.add(LanguageModel("Português (Portu)", "pt-rPT", false, R.drawable.ic_portuguese_flag))
-        lists.add(LanguageModel("日本語", "ja", false, R.drawable.ic_japan_flag))
-        lists.add(LanguageModel("Deutsch", "de", false, R.drawable.ic_german_flag))
-        lists.add(LanguageModel("中文 (简体)", "zh-rCN", false, R.drawable.ic_china_flag))
-        lists.add(LanguageModel("中文 (繁體) ", "zh-rTW", false, R.drawable.ic_china_flag))
-        lists.add(LanguageModel("عربي", "ar", false, R.drawable.ic_a_rap_flag))
-        lists.add(LanguageModel("বাংলা ", "bn", false, R.drawable.ic_bengali_flag))
-        lists.add(LanguageModel("Русский ", "ru", false, R.drawable.ic_russia_flag))
-        lists.add(LanguageModel("Türkçe ", "tr", false, R.drawable.ic_turkey_flag))
-        lists.add(LanguageModel("한국인 ", "ko", false, R.drawable.ic_korean_flag))
-        lists.add(LanguageModel("Indonesia", "in", false, R.drawable.ic_indo_flag))
-        val selectedLanguage = SharedPrefManager.getBoolean(SharedPrefManager.SELECTED_LANGUAGE, false)
-        if (selectedLanguage) {
-            val systemLangModel = lists.find { it.isoLanguage.contains(key) }
-            systemLangModel?.let {
-                it.isCheck = true
-                lists.remove(it)
-                lists.add(0, it)
+                val isArabic = (model as LanguageSubModel).isoLanguage == "ar"
+                window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+
+                binding.tvHeader.text = getLocalizedString(this, (model as LanguageSubModel).isoLanguage, R.string.please_select_language_to_continue)
+                binding.tvLanguage.text = getLocalizedString(this, (model as LanguageSubModel).isoLanguage, R.string.language)
+
+
+            },
+            onClickDropDown = {
+                logDebug(message = "ChekClickLFO: onClickDropDown")
+                nativeManager?.cancelAutoReloadNative()
+                showNativeLanguageClickPreloadAtSplash()
+            },
+            onClickSingleLanguage = {
+                logDebug(message = "ChekClickLFO: onClickSingleLanguage: ${it.languageName}-${it.isoLanguage}")
+                binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
+                model = it
+
+                val isArabic = (model as LanguageModel).isoLanguage == "ar"
+                window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+
+                binding.tvHeader.text = getLocalizedString(this, (model as LanguageModel).isoLanguage, R.string.please_select_language_to_continue)
+                binding.tvLanguage.text = getLocalizedString(this, (model as LanguageModel).isoLanguage, R.string.language)
+
+                nativeManager?.cancelAutoReloadNative()
+                showNativeLanguageClickPreloadAtSplash()
             }
-            binding.ivDone.setEnableState(true)
+        )
+        binding.rclLanguage.adapter = adapter
+    }
 
-        }
+    private fun setLanguageDefault(): List<LanguageModel> {
+        val lists: MutableList<LanguageModel> = DataProject.listLanguage()
+
         return lists
     }
 
-    fun ivDone(v: View) {
-        SharedPrefManager.saveBoolean(SharedPrefManager.SELECTED_LANGUAGE, true)
-        val editor = getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
-        editor.putBoolean("openLanguage", true)
-        editor.apply()
-        SystemUtil.setPreLanguage(this@LanguageStartActivity, model.isoLanguage)
-        SystemUtil.setLocale(this)
-        startWithInter()
+    private fun showNativeLanguageClickPreloadAtSplash() {
+        if (nativeLanguageClickPreload != null && !isShowNativeLanguageClickPreloadAtSplash && Admob.getInstance()
+                .checkCondition(this, Constants.RemoteKeys.native_language)
+        ) {
+            val adView: NativeAdView = layoutInflater.inflate(R.layout.native_large_ads_with_button_above, binding.frAds, false) as NativeAdView
+            binding.frAds.addView(adView)
+            Admob.getInstance().populateNativeAdView(nativeLanguageClickPreload, adView)
+        }
     }
 
-    private fun startWithInter() {
-        EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_save_click)
-        if (countOpenSplash <= 10) {
-            EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_save_click + "_${countOpenSplash}")
-        }
-
-        if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.inter_splash) &&
+    fun ivDone(v: View) {
+        /* binding.rlContent.visibility = View.GONE
+         binding.llApplyLanguage.visibility = View.VISIBLE*/
+        preloadANativeMainIntro()
+        if (Admob.getInstance().checkCondition(this, Constants.AdsKey.inter_splash) &&
+            !TechManager.getInstance().isTech(this) &&
+            Admob.getInstance().interstitialAdSplashHigh != null
+        ) {
+            Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplashHigh, object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    startNextAct()
+                }
+            }, false, Constants.RemoteKeys.inter_splash)
+        } else if (Admob.getInstance().checkCondition(this, inter_splash) &&
             !TechManager.getInstance().isTech(this) &&
             Admob.getInstance().interstitialAdSplash != null
         ) {
@@ -191,34 +215,32 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         } else {
             startNextAct()
         }
-
     }
 
+
     private fun startNextAct() {
+        EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_save_click)
+        val count = SharedPrefManager.getInt("language_fo_save_click")
+        if (count < 11) EventTrackingHelper.logEvent(this, "language_fo_save_click_$count")
+        countOpenSplash = RemoteConfigHelper.getInstance().get_config_long(this, "countOpenSplash")
+
+        SharedPrefManager.saveBoolean("isFirstSelectLanguage", true)
+        val editor = getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
+        editor.putBoolean("openLanguage", true)
+        editor.apply()
+        if (model is LanguageSubModel) {
+            SystemUtil.setPreLanguage(this@LanguageStartActivity, (model as LanguageSubModel).isoLanguage)
+            SystemUtil.setPreLanguageName(this, (model as LanguageSubModel).languageName)
+        } else {
+            SystemUtil.setPreLanguage(this@LanguageStartActivity, (model as LanguageModel).isoLanguage)
+            SystemUtil.setPreLanguageName(this, (model as LanguageModel).languageName)
+        }
+        SharedPrefManager.saveBoolean("isFirstSelectLanguage", true)
+        SystemUtil.setLocale(this)
         showActivity(TutorialActivity::class.java, null)
         finish()
     }
 
-    override fun onClick(data: LanguageModel) {
-        binding.ivDone.setEnableState(true)
-
-        EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose)
-        if (!isChooseLanguage) {
-            nativeManager?.reloadAdNow()
-            if (countOpenSplash <= 10) {
-                EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose + "_${countOpenSplash}")
-            }
-        }
-
-        model = data
-        val isArabic = model.isoLanguage == "ar"
-        window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
-
-        SystemUtil.setLocale(this)
-        binding.tvHeader.text = getLocalizedString(this, model.isoLanguage, R.string.please_select_language_to_continue)
-        binding.tvLanguage.text = getLocalizedString(this, model.isoLanguage, R.string.language)
-        binding.ivDone.visible()
-    }
 
     private fun getLocalizedString(context: Context, languageCode: String, resId: Int): String {
         val localeParts = languageCode.split("-")
@@ -234,23 +256,54 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     //ads
+    private fun loadBannerSettingForTech() {
+        Admob.getInstance().loadBannerAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(Constants.AdsKey.banner_setting),
+            binding.bannerSetting,
+            object : BannerCallback() {},
+            {},
+            Constants.RemoteKeys.banner_setting
+        )
+    }
+
     private fun loadNativeLanguage() {
-        /* loadNative(
-             binding.frAds,
-             Constants.RemoteKeys.native_language,
-             Constants.RemoteKeys.native_language_2,
-             Constants.AdsKey.native_language,
-             Constants.AdsKey.native_language_2,
-             R.layout.native_large_ads_with_button_above,
-             R.layout.shimmer_native_large_with_button_above,
-         )*/
+        loadNative(
+            binding.frAds,
+            Constants.RemoteKeys.native_language,
+            Constants.RemoteKeys.native_language_2,
+            Constants.AdsKey.native_language,
+            Constants.AdsKey.native_language_2,
+            R.layout.native_large_ads_with_button_above,
+            R.layout.shimmer_native_large_with_button_above,
+        )
     }
 
     private fun showNativeLanguagePreloadAtSplash() {
-         /*if (SplashActivity.Companion.nativeLanguagePreload != null && !SplashActivity.Companion.isShowNativeLanguagePreloadAtSplash) {
-             val adView: NativeAdView = layoutInflater.inflate(R.layout.native_large_ads_with_button_above, binding.frAds, false) as NativeAdView
-             binding.frAds.addView(adView)
-             Admob.getInstance().populateNativeAdView(SplashActivity.Companion.nativeLanguagePreload, adView)
-         }*/
+        if (nativeLanguageMainPreload != null && !SplashActivity.Companion.isShowNativeLanguagePreloadAtSplash) {
+            val adView: NativeAdView = layoutInflater.inflate(R.layout.native_large_ads_with_button_above, binding.frAds, false) as NativeAdView
+            binding.frAds.addView(adView)
+            Admob.getInstance().populateNativeAdView(SplashActivity.Companion.nativeLanguageMainPreload, adView)
+        }
+    }
+
+    private fun preloadANativeMainIntro() {
+        if (!TechManager.getInstance().isTech(this)) {
+            Admob.getInstance().loadNativeAds(
+                this,
+                AdmobApi.getInstance().getListIDByName(native_intro),
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                        super.onNativeAdLoaded(nativeAd)
+                        nativeIntroPreload = nativeAd
+                    }
+
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        isShowNativeIntroPreloadAtSplash = true
+                    }
+                }, native_intro
+            )
+        }
     }
 }

@@ -23,6 +23,9 @@ enum class DateFormatPattern(val pattern: String) {
     /** Ex: 14:35:50 */
     TIME_ONLY("HH:mm:ss"),
 
+    /** Ex: 14:35 */
+    TIME_ONLY_2("HH:mm"),
+
     /** Ex: Aug 22 */
     TIME_MONTH_DAY("MMM d"),
 
@@ -48,7 +51,10 @@ enum class DateFormatPattern(val pattern: String) {
     DD_MMM_HH_MM_A("dd MMM, hh:mm a"),
 
     /** Ex:  02:33 PM - Apr 22 2025*/
-    HH_MM_A_MMM_DD_YYYY("hh:mm a - MMM dd yyyy")
+    HH_MM_A_MMM_DD_YYYY("hh:mm a - MMM dd yyyy"),
+
+    /** Ex: 22 Apr, 2025 - 22:33 */
+    MMM_DD_YYYY_HH_MM_A("dd MMM,  yyyy - HH:mm"),
 }
 
 

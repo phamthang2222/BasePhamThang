@@ -21,6 +21,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 
 fun View.onGlobalLayout(callback: () -> Unit) {
     viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -295,4 +296,36 @@ fun View.dismissWithFade(
         .start()
 }
 
+fun View.setFullscreenMode(isFullscreen: Boolean, portraitRatio: String? = "16:9") {
+    if (this.layoutParams !is ConstraintLayout.LayoutParams) {
+        return
+    }
+
+    val params = this.layoutParams as ConstraintLayout.LayoutParams
+
+    if (isFullscreen) {
+        params.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+        params.height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+
+        params.dimensionRatio = null
+
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+    } else {
+        params.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+        params.height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+
+        params.dimensionRatio = portraitRatio
+
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+
+        params.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+    }
+
+    this.layoutParams = params
+}
 

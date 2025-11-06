@@ -102,9 +102,21 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <FrameLayout
-            android:id="@+id/frAds"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:id="@+id/rl_lg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <FrameLayout
+                android:id="@+id/bannerSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:visibility="gone"/>
+            <FrameLayout
+                android:id="@+id/frAds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -25,5 +25,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "APP04_120FPS"
+rootProject.name = "BasePhamThang"
 include ':app'

@@ -43,8 +43,7 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
 
     companion object {
         var isLogEventOnboardOpen = false
-        var nativeAd: NativeAd? = null
-        var nativeAd1: NativeAd? = null
+
     }
 
     override fun onResume() {

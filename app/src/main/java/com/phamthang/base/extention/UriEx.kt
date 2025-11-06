@@ -2,6 +2,7 @@ package com.phamthang.base.extention
 
 import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
 import java.io.File
 
 
@@ -17,4 +18,21 @@ fun Uri.toFile(context: Context): File? {
         e.printStackTrace()
         null
     }
+}
+
+fun Uri.getFileName(context: Context): String?{
+    var fileName: String? = null
+    try {
+        context.contentResolver.query(this, null, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    fileName = cursor.getString(nameIndex)
+                }
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return fileName
 }

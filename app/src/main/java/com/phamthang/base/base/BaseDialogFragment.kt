@@ -1,6 +1,5 @@
 package com.phamthang.base.base
 
-
 import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
@@ -10,12 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import com.phamthang.base.R
 import com.phamthang.base.extention.isRPlus
 import com.phamthang.base.utils.SystemUtil
-import com.phamthang.base.R
 
 
 abstract class BaseDialogFragment<VB : ViewBinding>(
@@ -24,6 +23,7 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
 ) : DialogFragment() {
 
     private var _binding: VB? = null
+    val isBindingNull get() = _binding == null
     val binding get() = _binding!!
 
     lateinit var mActivity: Activity
@@ -31,10 +31,14 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
     abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     abstract fun initView()
     abstract fun bindView()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isCancelable = canBackToClose
+    }
 
     override fun onStart() {
         super.onStart()
-        if(isRPlus()){
+        if (isRPlus()) {
             dialog?.window?.insetsController?.let { controller ->
                 controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
                 controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -46,28 +50,9 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         super.onDismiss(dialog)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (canBackToClose) {
-                        dismiss()
-                    } else {
-
-                    }
-                }
-            }
-        )
-
-    }
-
-
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(requireContext(), R.style.BaseDialog)
-        dialog.setCancelable(canBackToClose)
-        dialog.setCanceledOnTouchOutside(canCancelableOutside)
+        dialog.setCancelable(canCancelableOutside)
         return dialog
     }
 
@@ -93,14 +78,14 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         _binding = null
     }
 
-    fun showDialog(manager: androidx.fragment.app.FragmentManager,tag : String = "") {
-        if (!isAdded  && !isResumed) {
-            show(manager, "")
+    fun showDialog(manager: FragmentManager, tag: String = "") {
+        if (!isAdded) {
+            show(manager, tag)
         }
     }
 
     fun dismissDialog() {
-        if (isAdded && isResumed) {
+        if (isAdded ) {
             dismiss()
         }
     }

@@ -20,8 +20,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.phamthang.base.utils.PermissionManager
 import com.phamthang.base.R
+import com.phamthang.base.utils.PermissionManager
 
 fun Context.copyToClipboard(text: String, view: View) {
     val clip = ClipData.newPlainText("", text)
