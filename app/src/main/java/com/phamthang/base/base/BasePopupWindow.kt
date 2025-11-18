@@ -62,5 +62,34 @@ abstract class BasePopupWindow<VB : ViewBinding>(
         }
 
     }
+
+    fun showAbove(anchor: View, xOff: Int = 0, yOff: Int = 0) {
+        val inflater = LayoutInflater.from(anchor.context)
+        binding = bindingInflater(inflater)
+        contentView = binding.root
+        width = popupWidth
+        height = popupHeight
+        onViewCreated()
+
+        // Đo kích thước popup trước
+        binding.root.measure(
+            View.MeasureSpec.UNSPECIFIED,
+            View.MeasureSpec.UNSPECIFIED
+        )
+        val popupHeight = binding.root.measuredHeight
+
+        val location = IntArray(2)
+        anchor.getLocationOnScreen(location)
+        val x = location[0] + xOff
+        val y = location[1] - popupHeight + yOff // nằm phía trên
+
+        showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
+    }
+
+    open fun dismissPopup(){
+        if(isShowing){
+            dismiss()
+        }
+    }
 }
 

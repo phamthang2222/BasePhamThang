@@ -1,8 +1,8 @@
 package com.phamthang.base.utils
 
 import com.phamthang.base.R
-import com.phamthang.base.ui.language.model.LanguageModel
-import com.phamthang.base.ui.language.model.LanguageSubModel
+import com.phamthang.base.ui.defaut_ui.language.model.LanguageModel
+import com.phamthang.base.ui.defaut_ui.language.model.LanguageSubModel
 
 object DataProject {
 

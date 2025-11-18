@@ -17,7 +17,7 @@ import com.phamthang.base.extention.isQPlus
 import com.phamthang.base.extention.isTiRaMiSu
 import com.phamthang.base.extention.openAppPermissionSettings
 import com.phamthang.base.extention.visible
-import com.phamthang.base.ui.home.HomeActivity
+import com.phamthang.base.ui.feature.home.HomeActivity
 import com.phamthang.base.utils.PermissionManager
 import com.phamthang.base.databinding.LayoutBtsPerBinding
 import kotlin.apply

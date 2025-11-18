@@ -7,10 +7,9 @@
                 android:left="30dp"
                 android:right="30dp"
                 android:top="30dp" />
-            <solid android:color="@color/container_1" />
+            <solid android:color="@color/gray1_in_app" />
             <corners android:radius="8dp" />
         </shape>
     </item>
 
-    <item android:drawable="@drawable/iv_thumbnail_df" />
 </layer-list>

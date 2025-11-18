@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -34,12 +35,13 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.phamthang.base.custome_view.LoadingView
 import com.phamthang.base.extention.hideNavigation
 import com.phamthang.base.extention.tap
-import com.phamthang.base.ui.no_internet.NetworkReceiver
-import com.phamthang.base.ui.splash.SplashActivity
-import com.phamthang.base.ui.welcome_back.WelcomeBackActivity
+
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.SystemUtil
 import com.phamthang.base.R
+import com.phamthang.base.ui.defaut_ui.no_internet.NetworkReceiver
+import com.phamthang.base.ui.defaut_ui.splash.SplashActivity
+import com.phamthang.base.ui.defaut_ui.welcome_back.WelcomeBackActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -149,13 +151,14 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         adsKeySecondary: String,
         idLayoutNative: Int,
         idLayoutShimmer: Int,
+        lifecycleOwner: LifecycleOwner = this,
         idNativeMeta: Int = idLayoutNative
     ) : NativeManager? {
         val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idNativeMeta, true)
         nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
         //set secondary list id ads if load double native
         nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
-       val nativeManager = NativeManager(this, this, nativeBuilder, remoteKeyMain, remoteKeySecondary)
+       val nativeManager = NativeManager(this, lifecycleOwner, nativeBuilder, remoteKeyMain, remoteKeySecondary)
         nativeManager.timeOutCallAds = 12000
         nativeManager.setIntervalReloadNative(
             RemoteConfigHelper.getInstance().get_config_long(this, Constants.RemoteKeys.interval_reload_native) * 1000

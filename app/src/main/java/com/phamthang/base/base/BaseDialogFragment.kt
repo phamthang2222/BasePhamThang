@@ -18,8 +18,7 @@ import com.phamthang.base.utils.SystemUtil
 
 
 abstract class BaseDialogFragment<VB : ViewBinding>(
-    private val canBackToClose: Boolean = false,
-    private val canCancelableOutside: Boolean = false
+    private val canCancelable: Boolean = false
 ) : DialogFragment() {
 
     private var _binding: VB? = null
@@ -33,7 +32,7 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
     abstract fun bindView()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = canBackToClose
+        isCancelable = canCancelable
     }
 
     override fun onStart() {
@@ -52,7 +51,6 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = Dialog(requireContext(), R.style.BaseDialog)
-        dialog.setCancelable(canCancelableOutside)
         return dialog
     }
 
@@ -78,13 +76,13 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         _binding = null
     }
 
-    fun showDialog(manager: FragmentManager, tag: String = "") {
+    open fun showDialog(manager: FragmentManager) {
         if (!isAdded) {
             show(manager, tag)
         }
     }
 
-    fun dismissDialog() {
+    open fun dismissDialog() {
         if (isAdded ) {
             dismiss()
         }

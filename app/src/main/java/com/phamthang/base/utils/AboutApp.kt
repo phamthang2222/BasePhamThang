@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import com.amazic.library.ads.app_open_ads.AppOpenManager
-import com.phamthang.base.ui.home.HomeActivity
+import com.phamthang.base.ui.feature.home.HomeActivity
 
 fun Activity.shareApp() {
     AppOpenManager.getInstance().disableAppResumeWithActivity(HomeActivity::class.java)
