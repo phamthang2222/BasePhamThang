@@ -14,12 +14,10 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.callback.NativeCallback
+import com.amazic.library.organic.TechManager
 import com.phamthang.base.extention.logDebug
-import com.google.android.gms.ads.LoadAdError
-
 import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.extention.gone
@@ -31,10 +29,12 @@ import com.phamthang.base.share_pref.SharedPrefManager
 import com.phamthang.base.ui.feature.home.HomeActivity
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
+import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityTutorialBinding
+import com.phamthang.base.ui.defaut_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.defaut_ui.wellcome.WelcomeActivity
 
-class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
+class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     private var introAdapter: IntroAdapter? = null
     private val mHelpGuid: ArrayList<IntroModel> = ArrayList()
     private var countOpenSplash = 1L
@@ -43,7 +43,10 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
 
     companion object {
         var isLogEventOnboardOpen = false
-
+        var nativeAdFullScreen: NativeAd? = null
+        var nativeAdFullScreen2: NativeAd? = null
+        var nativeAdFullScreen1: NativeAd? = null
+        var nativeAdFullScreen12: NativeAd? = null
     }
 
     override fun onResume() {
@@ -62,18 +65,16 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
     }
 
     private fun showNativeIntroPreloadAtSplash() {
-       /* if (LanguageStartActivity.Companion.nativeIntroPreload != null && !LanguageStartActivity.Companion.isShowNativeIntroPreloadAtSplash && !TechManager.getInstance().isTech(this)) {
-            val adView: NativeAdView = layoutInflater.inflate(
-                R.layout.native_small_ads_with_button_above,
-                binding.frAds,
-                false
-            ) as NativeAdView
+        if (LanguageStartActivity.Companion.nativeIntroPreload != null && !LanguageStartActivity.Companion.isShowNativeIntroPreloadAtSplash && !TechManager.getInstance()
+                .isTech(this)
+        ) {
+            val adView: NativeAdView = layoutInflater.inflate(R.layout.native_small_ads_with_button_above, binding.frAds, false) as NativeAdView
             binding.frAds.addView(adView)
             Admob.getInstance().populateNativeAdView(LanguageStartActivity.Companion.nativeIntroPreload, adView)
-        }*/
+        }
     }
 
-    override fun createViewModel(): Class<TutorialVM> = TutorialVM::class.java
+    override fun createViewModel(): Class<CommonVM> = CommonVM::class.java
     override fun getViewDataBinding(): ActivityTutorialBinding =
         ActivityTutorialBinding.inflate(layoutInflater)
 
@@ -106,9 +107,10 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
                 getString(R.string.content_intro_1)
             )
         )
-       /* if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full) || Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full_2)) {
+        if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full) ||
+            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full_2)) {
             mHelpGuid.add(IntroModel(99, -1, "ads", "ads"))
-        }*/
+        }
         mHelpGuid.add(
             IntroModel(
                 2,
@@ -125,9 +127,11 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
                 getString(R.string.content_intro_3)
             )
         )
-    /*    if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1) || Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1_2)) {
+
+        if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1) ||
+            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1_2)) {
             mHelpGuid.add(IntroModel(99, -1, "ads1", "ads1"))
-        }*/
+        }
         mHelpGuid.add(
             IntroModel(
                 4,
@@ -143,20 +147,8 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
         binding.viewPager2.adapter = introAdapter
         binding.viewPager2.clipToPadding = false
         binding.viewPager2.clipChildren = false
-        binding.viewPager2.offscreenPageLimit = 4
         binding.viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
-        //animation
-       /* val compositePageTransformer = CompositePageTransformer()
-        compositePageTransformer.addTransformer(MarginPageTransformer(100))
-        compositePageTransformer.addTransformer { view, position ->
-            val r = 1 - abs(position)
-            view.scaleY = 0.8f + r * 0.2f
-            val absPosition = abs(position)
-            view.alpha = 1.0f - (1.0f - 0.3f) * absPosition
-        }
-        binding.viewPager2.setPageTransformer(compositePageTransformer)*/
         setupIndicators(binding.viewPager2.adapter?.itemCount ?: 0)
-
 
         binding.viewPager2.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             @SuppressLint("InvalidAnalyticsName", "UseCompatLoadingForDrawables")
@@ -196,8 +188,7 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
     }
 
     private fun logEvent(position: Int) {
-        logDebug(message = "xdadas_onboarding${position}_view")
-        EventTrackingHelper.logEvent(this, "onboarding${position+1}_view")
+        EventTrackingHelper.logEvent(this, "onboarding${position + 1}_view")
     }
 
     override fun onBackPressCustom() {
@@ -206,28 +197,27 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
 
     private fun gotoNextScreen() {
         EventTrackingHelper.logEvent(this, Constants.TrackingKeys.onboarding_next_click)
-        if(countOpenSplash<=10){
-            EventTrackingHelper.logEvent(this,"onboarding_next_click_$countOpenSplash")
+        if (countOpenSplash <= 10) {
+            EventTrackingHelper.logEvent(this, "onboarding_next_click_$countOpenSplash")
         }
-        val ratingAppear = SharedPrefManager.getInt(Constants.KeyApp.RATING_APPEAR,1)
-        if(!SharePrefUtils.isRated(this) && (ratingAppear==2 || ratingAppear==5 || ratingAppear==9)){
-            /*showRatingDialog{
+        val ratingAppear = SharedPrefManager.getInt(Constants.KeyApp.RATING_APPEAR, 1)
+        if (!SharePrefUtils.isRated(this) && (ratingAppear == 2 || ratingAppear == 5 || ratingAppear == 9)) {
+            showRatingDialog {
                 showInter()
-            }*/
-            showInter()
-        }else{
+            }
+        } else {
             showInter()
         }
+
     }
 
     private fun showInter() {
-       /* loadAndShowInter(
+        loadAndShowInter(
             Constants.AdsKey.inter_intro,
             Constants.RemoteKeys.inter_intro
         ) {
             startNextAct()
-        }*/
-        startNextAct()
+        }
     }
 
     private fun startNextAct() {
@@ -277,8 +267,8 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
     }
 
     private fun updateAdLayoutVisibility(position: Int) {
-        binding.tvNext.text =
-            if (position == mHelpGuid.size - 1) getString(R.string.start) else getString(R.string._continue)
+        /*  binding.tvNext.text =
+              if (position == mHelpGuid.size - 1) getString(R.string.start) else getString(R.string._next)*/
 
         if (mHelpGuid[position].position == 99) {
             binding.llBottom.gone()
@@ -290,7 +280,7 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
     }
 
     private fun loadNativeIntro() {
-       /* loadNative(
+        loadNative(
             binding.frAds,
             Constants.RemoteKeys.native_intro,
             Constants.RemoteKeys.native_intro_2,
@@ -299,70 +289,9 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
             R.layout.native_small_ads_with_button_above,
             R.layout.shimmer_native_small_with_button_above
         )
-        loadNativeIntroFull(Constants.AdsKey.native_intro_full, Constants.RemoteKeys.native_intro_full) //main
-        loadNativeIntroFull(Constants.AdsKey.native_intro_full_2, Constants.RemoteKeys.native_intro_full_2) //second
-        loadNativeIntroFull1(Constants.AdsKey.native_intro_full1, Constants.RemoteKeys.native_intro_full1) //main
-        loadNativeIntroFull1(Constants.AdsKey.native_intro_full1_2, Constants.RemoteKeys.native_intro_full1_2) //main*/
-    }
-
-
-    private fun loadNativeIntroFull(adsKey: String, remoteKey: String){
-        if (Admob.getInstance().checkCondition(this, remoteKey)) {
-            Admob.getInstance().loadNativeAds(
-                this,
-                AdmobApi.getInstance().getListIDByName(adsKey),
-                object : NativeCallback() {
-                    override fun onNativeAdLoaded(nativeAd: NativeAd) {
-                        super.onNativeAdLoaded(nativeAd)
-                        if(remoteKey == Constants.RemoteKeys.native_intro_full){
-                            introAdapter?.setNativeAds(nativeAd, 1)
-                        }else{
-                            introAdapter?.setNativeAds2(nativeAd, 1)
-                        }
-                    }
-
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
-                        super.onAdFailedToLoad(loadAdError)
-                    }
-                },
-                remoteKey
-            )
-        }
 
     }
-    private fun loadNativeIntroFull1(adsKey: String, remoteKey: String){
-        if (Admob.getInstance().checkCondition(this, remoteKey)) {
-            Admob.getInstance().loadNativeAds(
-                this,
-                AdmobApi.getInstance().getListIDByName(adsKey),
-                object : NativeCallback() {
-                    override fun onNativeAdLoaded(nativeAd: NativeAd) {
-                        super.onNativeAdLoaded(nativeAd)
-                        logDebug(message = "nativeAd :$nativeAd")
-                        if (Admob.getInstance().checkCondition(this@TutorialActivity, Constants.RemoteKeys.native_intro_full) || Admob.getInstance().checkCondition(this@TutorialActivity, Constants.RemoteKeys.native_intro_full_2)) {
-                            if(remoteKey == Constants.RemoteKeys.native_intro_full1){
-                                introAdapter?.setNativeAds1(nativeAd, 4)
-                            }else{
-                                introAdapter?.setNativeAds12(nativeAd, 4)
-                            }
-                        } else {
-                            if(remoteKey == Constants.RemoteKeys.native_intro_full1){
-                                introAdapter?.setNativeAds1(nativeAd, 3)
-                            }else{
-                                introAdapter?.setNativeAds12(nativeAd, 3)
-                            }
-                        }
-                    }
 
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError?) {
-                        super.onAdFailedToLoad(loadAdError)
-                    }
-                },
-                remoteKey
-            )
-        }
-
-    }
 
     private fun showRatingDialog(onRating: () -> Unit) {
         val ratingDialog = RatingDialog(this)
@@ -384,17 +313,17 @@ class TutorialActivity : BaseActivity<TutorialVM, ActivityTutorialBinding>() {
             override fun rating(rate: Float) {
                 SharePrefUtils.forceRated(this@TutorialActivity)
                 onRating()
-                logDebug(tagSpecial = "showRatingDialog",message = "rating")
+                logDebug(tagSpecial = "showRatingDialog", message = "rating")
             }
 
             override fun cancel() {
                 onRating()
-                logDebug(tagSpecial = "showRatingDialog",message = "cancel")
+                logDebug(tagSpecial = "showRatingDialog", message = "cancel")
             }
 
             override fun later() {
                 onRating()
-                logDebug(tagSpecial = "showRatingDialog",message = "later")
+                logDebug(tagSpecial = "showRatingDialog", message = "later")
             }
         })
         ratingDialog.show()
