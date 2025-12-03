@@ -2,7 +2,6 @@ package com.phamthang.base
 
 import com.amazic.library.ads.app_open_ads.AppOpenManager
 import com.amazic.library.application.AdsApplication
-import com.phamthang.base.share_pref.SharedPrefManager
 import com.phamthang.base.ui.defaut_ui.splash.SplashActivity
 import kotlin.jvm.java
 

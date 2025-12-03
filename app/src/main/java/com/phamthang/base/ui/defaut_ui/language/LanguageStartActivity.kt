@@ -20,7 +20,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.extention.logDebug
 import com.phamthang.base.extention.tap
-import com.phamthang.base.share_pref.SharedPrefManager
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.DataProject
 import com.phamthang.base.utils.SystemUtil
@@ -214,10 +213,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
 
     private fun startNextAct() {
         EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_save_click)
-        val count = SharedPrefManager.getInt("language_fo_save_click")
-        if (count < 11) EventTrackingHelper.logEvent(this, "language_fo_save_click_$count")
-        countOpenSplash = RemoteConfigHelper.getInstance().get_config_long(this, "countOpenSplash")
-
+        if (countOpenSplash < 11) EventTrackingHelper.logEvent(this, "language_fo_save_click_$countOpenSplash")
         val editor = getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
         editor.putBoolean("openLanguage", true)
         editor.apply()

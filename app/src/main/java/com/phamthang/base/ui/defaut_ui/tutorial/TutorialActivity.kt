@@ -25,14 +25,15 @@ import com.phamthang.base.extention.tap
 import com.phamthang.base.extention.visible
 import com.phamthang.base.rate.RatingDialog
 import com.phamthang.base.rate.SharePrefUtils
-import com.phamthang.base.share_pref.SharedPrefManager
 import com.phamthang.base.ui.feature.home.HomeActivity
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityTutorialBinding
+import com.phamthang.base.share_pref.SharePrefApp
 import com.phamthang.base.ui.defaut_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.defaut_ui.wellcome.WelcomeActivity
+import javax.inject.Inject
 
 class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     private var introAdapter: IntroAdapter? = null
@@ -108,7 +109,8 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
             )
         )
         if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full) ||
-            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full_2)) {
+            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full_2)
+        ) {
             mHelpGuid.add(IntroModel(99, -1, "ads", "ads"))
         }
         mHelpGuid.add(
@@ -129,7 +131,8 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
         )
 
         if (Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1) ||
-            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1_2)) {
+            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_intro_full1_2)
+        ) {
             mHelpGuid.add(IntroModel(99, -1, "ads1", "ads1"))
         }
         mHelpGuid.add(
@@ -200,7 +203,7 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
         if (countOpenSplash <= 10) {
             EventTrackingHelper.logEvent(this, "onboarding_next_click_$countOpenSplash")
         }
-        val ratingAppear = SharedPrefManager.getInt(Constants.KeyApp.RATING_APPEAR, 1)
+        val ratingAppear = sharePrefApp.countRatingAppear
         if (!SharePrefUtils.isRated(this) && (ratingAppear == 2 || ratingAppear == 5 || ratingAppear == 9)) {
             showRatingDialog {
                 showInter()
@@ -221,14 +224,14 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     }
 
     private fun startNextAct() {
-        val openHome = SharedPrefManager.getBoolean(SharedPrefManager.FIRST_OPEN_APP, true)
-        if (!openHome) {
-            showActivity(HomeActivity::class.java, null)
-            finishAffinity()
-        } else {
-            showActivity(WelcomeActivity::class.java, null)
-            finishAffinity()
-        }
+        val openHome = sharePrefApp.isFirstOpenApp
+            if (!openHome) {
+                showActivity(HomeActivity::class.java, null)
+                finishAffinity()
+            } else {
+                showActivity(WelcomeActivity::class.java, null)
+                finishAffinity()
+            }
     }
 
     private fun setupIndicators(count: Int) {

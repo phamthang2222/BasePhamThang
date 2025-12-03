@@ -39,11 +39,14 @@ import com.phamthang.base.extention.tap
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.SystemUtil
 import com.phamthang.base.R
+import com.phamthang.base.share_pref.SharePrefApp
 import com.phamthang.base.ui.defaut_ui.no_internet.NetworkReceiver
 import com.phamthang.base.ui.defaut_ui.splash.SplashActivity
 import com.phamthang.base.ui.defaut_ui.welcome_back.WelcomeBackActivity
+import com.phamthang.base.ui.feature.home.HomeActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity() {
 
@@ -59,12 +62,12 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     private var currentApiVersion = 0
     private var networkReceiver: NetworkReceiver? = null
     var nativeManager: NativeManager? = null
-    private var  collapseBannerManager : CollapseBannerManager? = null
+    private var collapseBannerManager: CollapseBannerManager? = null
 
     private lateinit var loadingDialog: Dialog
 
-
-
+    @Inject
+    lateinit var sharePrefApp: SharePrefApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         SystemUtil.setLocale(this)
@@ -74,29 +77,29 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         binding = getViewDataBinding()
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[createViewModel()]
-      /*  networkReceiver = NetworkReceiver {
-            if (!it) {
-                showActivityCustom(NoInternetActivity::class.java, null)
-            } else {
-                if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) != Constants.ScreenKey.SPLASH_ACTIVITY) {
-                    finish()
-                } else if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) == Constants.ScreenKey.SPLASH_ACTIVITY) {
-                    val myIntent = Intent(this, SplashActivity::class.java)
-                    myIntent.flags =
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(myIntent)
-                }
-            }
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(
-                networkReceiver,
-                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
-                RECEIVER_EXPORTED
-            )
-        } else {
-            registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
-        }*/
+        /*  networkReceiver = NetworkReceiver {
+              if (!it) {
+                  showActivityCustom(NoInternetActivity::class.java, null)
+              } else {
+                  if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) != Constants.ScreenKey.SPLASH_ACTIVITY) {
+                      finish()
+                  } else if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) == Constants.ScreenKey.SPLASH_ACTIVITY) {
+                      val myIntent = Intent(this, SplashActivity::class.java)
+                      myIntent.flags =
+                          Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                      startActivity(myIntent)
+                  }
+              }
+          }
+          if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+              registerReceiver(
+                  networkReceiver,
+                  IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
+                  RECEIVER_EXPORTED
+              )
+          } else {
+              registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
+          }*/
         initView()
         bindViewModel()
         baseView()
@@ -130,9 +133,10 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         }
     }
 
-    fun reloadCollapse(){
+    fun reloadCollapse() {
         collapseBannerManager?.reloadAdNow()
     }
+
     private fun loadBannerAds(
         frAds: FrameLayout,
         adsKey: String
@@ -153,18 +157,18 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         idLayoutShimmer: Int,
         lifecycleOwner: LifecycleOwner = this,
         idNativeMeta: Int = idLayoutNative
-    ) : NativeManager? {
+    ): NativeManager? {
         val nativeBuilder = NativeBuilder(this, frAds, idLayoutShimmer, idLayoutNative, idNativeMeta, true)
         nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKeyMain))
         //set secondary list id ads if load double native
         nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKeySecondary))
-       val nativeManager = NativeManager(this, lifecycleOwner, nativeBuilder, remoteKeyMain, remoteKeySecondary)
+        val nativeManager = NativeManager(this, lifecycleOwner, nativeBuilder, remoteKeyMain, remoteKeySecondary)
         nativeManager.timeOutCallAds = 12000
         nativeManager.setIntervalReloadNative(
             RemoteConfigHelper.getInstance().get_config_long(this, Constants.RemoteKeys.interval_reload_native) * 1000
         )
         nativeManager.setAlwaysReloadOnResume(true)
-        return  nativeManager
+        return nativeManager
     }
 
     fun loadNativeAll(
@@ -346,6 +350,13 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
             }
         }
         onBackPressedDispatcher.addCallback(this@BaseActivity, onBackPressedCallback)
+
+        //rating, first open
+        if (this is HomeActivity) {
+            sharePrefApp.increaseCountRatingAppear()
+            if (sharePrefApp.isFirstOpenApp) sharePrefApp.isFirstOpenApp = false
+        }
+
     }
 
 

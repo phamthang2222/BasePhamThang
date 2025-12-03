@@ -12,7 +12,6 @@ import com.phamthang.base.dialog.DialogPer
 import com.phamthang.base.extention.isTiRaMiSu
 import com.phamthang.base.extention.openAppPermissionSettings
 import com.phamthang.base.extention.tap
-import com.phamthang.base.share_pref.SharedPrefManager
 import com.phamthang.base.ui.feature.home.HomeActivity
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.PermissionManager

@@ -11,8 +11,6 @@ object Constants {
     }
 
     object KeyApp {
-        const val RATING_APPEAR = "RatingAppear"
-        const val PUZZLE = "Puzzle "
 
     }
 
