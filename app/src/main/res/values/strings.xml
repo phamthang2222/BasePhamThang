@@ -46,5 +46,7 @@
 
     <string name="content_permission">This app needs permissions below to work properly</string>
     <string name="label_permission">Permission</string>
+    <string name="apply_lfo">We\'re setting up your language preferences.</string>
+    <string name="title_apply_lfo">Applying your language settings</string>
 
 </resources>

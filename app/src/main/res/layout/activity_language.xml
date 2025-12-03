@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_activity">
 
+
+
     <LinearLayout
-        android:id="@+id/linear_language"
+        android:id="@+id/rlContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/rl_lg"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbar_language"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:minHeight="?attr/actionBarSize"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp">
@@ -37,13 +43,16 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvLanguage"
                 android:ellipsize="end"
-                android:gravity="start"
+                android:gravity="center"
+                android:layout_marginTop="6dp"
                 android:maxLines="1"
+                android:paddingHorizontal="@dimen/_20sdp"
                 android:text="@string/please_select_language_to_continue"
-                android:textColor="@color/neutral_600"
+                android:textColor="@color/neutral_500"
                 android:textSize="14sp"
+
                 android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@+id/iv_done"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvLanguage" />
 
@@ -54,11 +63,13 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/iv_back"
                 android:fontFamily="@font/poppins_semi_bold"
+
                 android:includeFontPadding="false"
                 android:text="@string/language"
-                android:textColor="@color/neutral_800"
+                android:textColor="@color/black_in_app"
                 android:textSize="20sp"
                 android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,7 +80,7 @@
                 android:onClick="ivDone"
                 android:paddingVertical="8dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_tick"
+                android:src="@drawable/ic_tick_off"
                 android:text="save"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -79,9 +90,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="0.4dp"
+            app:dividerColor="@color/neutral_300" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -102,21 +119,76 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_lg"
-            android:layout_width="wrap_content"
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_apply_language"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/bg_activity"
+        android:orientation="vertical"
+
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/rl_lg"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_title_apply"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-            <FrameLayout
-                android:id="@+id/bannerSetting"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="65dp"
+            android:fontFamily="@font/inter_24pt_semibold"
+            android:gravity="center"
+            android:text="@string/title_apply_lfo"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="220dp"
+                android:layout_height="@dimen/_180sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/img_wellcome_back" />
+
+            <TextView
+                android:id="@+id/tv_content_apply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_2sdp"
-                android:visibility="gone"/>
-            <FrameLayout
-                android:id="@+id/frAds"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-    </LinearLayout>
-</RelativeLayout>
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/inter_24pt_medium"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="@string/apply_lfo"
+                android:textColor="@color/black1_in_app"
+                android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_lg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_activity"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <FrameLayout
+            android:id="@+id/bannerSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/frAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

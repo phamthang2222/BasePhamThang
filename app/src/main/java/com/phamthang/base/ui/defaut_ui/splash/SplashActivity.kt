@@ -208,7 +208,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
             //AsyncSplash.getInstance().setLoadAndShowIdInterAdSplashAsync() //Nếu request load đồng thời inter_splash va inter_splash_high
             AsyncSplash.getInstance().setListTurnOffRemoteKeys(addListTurnOffRemoteKeys())
             //Case without welcome back
-            AsyncSplash.getInstance().setInitResumeAdsNormal()
+//            AsyncSplash.getInstance().setInitResumeAdsNormal()
             //Case welcome back above ads resume
             AsyncSplash.getInstance().setInitWelcomeBackAboveResumeAds(WelcomeBackActivity::class.java)
             //Case welcome back below ads resume

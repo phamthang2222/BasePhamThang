@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
@@ -35,6 +36,8 @@ import com.phamthang.base.ui.defaut_ui.splash.SplashActivity.Companion.nativeLan
 import com.phamthang.base.ui.defaut_ui.tutorial.TutorialActivity
 import com.phamthang.base.utils.Constants.AdsKey.inter_splash
 import com.phamthang.base.utils.Constants.AdsKey.native_intro
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -140,14 +143,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 isChooseLanguage = true
                 binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
                 model = it
-
-                val isArabic = (model as LanguageSubModel).isoLanguage == "ar"
-                window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
-
-                binding.tvHeader.text = getLocalizedString(this, (model as LanguageSubModel).isoLanguage, R.string.please_select_language_to_continue)
-                binding.tvLanguage.text = getLocalizedString(this, (model as LanguageSubModel).isoLanguage, R.string.language)
-
-
+                translate((model as LanguageSubModel).isoLanguage)
             },
             onClickDropDown = {
                 logDebug(message = "ChekClickLFO: onClickDropDown")
@@ -158,13 +154,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 logDebug(message = "ChekClickLFO: onClickSingleLanguage: ${it.languageName}-${it.isoLanguage}")
                 binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
                 model = it
-
-                val isArabic = (model as LanguageModel).isoLanguage == "ar"
-                window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
-
-                binding.tvHeader.text = getLocalizedString(this, (model as LanguageModel).isoLanguage, R.string.please_select_language_to_continue)
-                binding.tvLanguage.text = getLocalizedString(this, (model as LanguageModel).isoLanguage, R.string.language)
-
+                translate((model as LanguageModel).isoLanguage)
                 nativeManager?.cancelAutoReloadNative()
                 showNativeLanguageClickPreloadAtSplash()
             }
@@ -179,8 +169,9 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     private fun showNativeLanguageClickPreloadAtSplash() {
-        if (nativeLanguageClickPreload != null && !isShowNativeLanguageClickPreloadAtSplash && Admob.getInstance()
-                .checkCondition(this, Constants.RemoteKeys.native_language)
+        if (nativeLanguageClickPreload != null &&
+            !isShowNativeLanguageClickPreloadAtSplash &&
+            Admob.getInstance().checkCondition(this, Constants.RemoteKeys.native_click)
         ) {
             val adView: NativeAdView = layoutInflater.inflate(R.layout.native_large_ads_with_button_above, binding.frAds, false) as NativeAdView
             binding.frAds.addView(adView)
@@ -189,31 +180,34 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     fun ivDone(v: View) {
-        /* binding.rlContent.visibility = View.GONE
-         binding.llApplyLanguage.visibility = View.VISIBLE*/
+        binding.rlContent.visibility = View.GONE
+        binding.llApplyLanguage.visibility = View.VISIBLE
         preloadANativeMainIntro()
-        if (Admob.getInstance().checkCondition(this, Constants.AdsKey.inter_splash) &&
-            !TechManager.getInstance().isTech(this) &&
-            Admob.getInstance().interstitialAdSplashHigh != null
-        ) {
-            Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplashHigh, object : InterCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    startNextAct()
-                }
-            }, false, Constants.RemoteKeys.inter_splash)
-        } else if (Admob.getInstance().checkCondition(this, inter_splash) &&
-            !TechManager.getInstance().isTech(this) &&
-            Admob.getInstance().interstitialAdSplash != null
-        ) {
-            Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplash, object : InterCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    startNextAct()
-                }
-            }, false, Constants.RemoteKeys.inter_splash)
-        } else {
-            startNextAct()
+        lifecycleScope.launch {
+            delay(5000L)
+            if (Admob.getInstance().checkCondition(this@LanguageStartActivity, Constants.AdsKey.inter_splash) &&
+                !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
+                Admob.getInstance().interstitialAdSplashHigh != null
+            ) {
+                Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplashHigh, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startNextAct()
+                    }
+                }, false, Constants.RemoteKeys.inter_splash)
+            } else if (Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
+                !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
+                Admob.getInstance().interstitialAdSplash != null
+            ) {
+                Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplash, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startNextAct()
+                    }
+                }, false, Constants.RemoteKeys.inter_splash)
+            } else {
+                startNextAct()
+            }
         }
     }
 
@@ -224,7 +218,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         if (count < 11) EventTrackingHelper.logEvent(this, "language_fo_save_click_$count")
         countOpenSplash = RemoteConfigHelper.getInstance().get_config_long(this, "countOpenSplash")
 
-        SharedPrefManager.saveBoolean("isFirstSelectLanguage", true)
         val editor = getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
         editor.putBoolean("openLanguage", true)
         editor.apply()
@@ -235,7 +228,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
             SystemUtil.setPreLanguage(this@LanguageStartActivity, (model as LanguageModel).isoLanguage)
             SystemUtil.setPreLanguageName(this, (model as LanguageModel).languageName)
         }
-        SharedPrefManager.saveBoolean("isFirstSelectLanguage", true)
         SystemUtil.setLocale(this)
         showActivity(TutorialActivity::class.java, null)
         finish()
@@ -305,5 +297,15 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 }, native_intro
             )
         }
+    }
+
+    private fun translate(code: String) {
+        val isArabic = code == "ar"
+        window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+
+        binding.tvHeader.text = getLocalizedString(this, code, R.string.please_select_language_to_continue)
+        binding.tvLanguage.text = getLocalizedString(this, code, R.string.language)
+        binding.tvTitleApply.text = getLocalizedString(this, code, R.string.title_apply_lfo)
+        binding.tvContentApply.text = getLocalizedString(this, code, R.string.apply_lfo)
     }
 }

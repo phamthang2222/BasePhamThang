@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.google.gms.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt)
+    id ("kotlin-kapt")
     id("kotlin-parcelize")
 }
 
@@ -128,9 +130,6 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.firestore.ktx)
 
-    // Billing
-    implementation(libs.android.billing)
-
     // Facebook SDK
     implementation(libs.facebook.android.sdk)
 
@@ -155,5 +154,7 @@ dependencies {
     //other
     implementation(libs.recyclerview.animators)
 
-//    implementation(libs.leakcanary)
+    //hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 }
