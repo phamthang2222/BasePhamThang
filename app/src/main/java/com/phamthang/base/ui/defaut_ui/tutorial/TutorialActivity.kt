@@ -28,6 +28,8 @@ import com.phamthang.base.rate.SharePrefUtils
 import com.phamthang.base.ui.feature.home.HomeActivity
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
+import com.phamthang.base.ads.AdsHelper
+import com.phamthang.base.ads.NativeType
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityTutorialBinding
 import com.phamthang.base.share_pref.SharePrefApp
@@ -215,7 +217,8 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     }
 
     private fun showInter() {
-        loadAndShowInter(
+        AdsHelper.loadAndShowInter(
+            this,
             Constants.AdsKey.inter_intro,
             Constants.RemoteKeys.inter_intro
         ) {
@@ -225,13 +228,14 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
 
     private fun startNextAct() {
         val openHome = sharePrefApp.isFirstOpenApp
-            if (!openHome) {
-                showActivity(HomeActivity::class.java, null)
-                finishAffinity()
-            } else {
-                showActivity(WelcomeActivity::class.java, null)
-                finishAffinity()
-            }
+        if (!openHome) {
+            showActivity(HomeActivity::class.java, null)
+            finishAffinity()
+        } else {
+            showActivity(WelcomeActivity::class.java, null)
+            finishAffinity()
+        }
+
     }
 
     private fun setupIndicators(count: Int) {
@@ -283,16 +287,14 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     }
 
     private fun loadNativeIntro() {
-        loadNative(
-            binding.frAds,
-            Constants.RemoteKeys.native_intro,
-            Constants.RemoteKeys.native_intro_2,
-            Constants.AdsKey.native_intro,
-            Constants.AdsKey.native_intro_2,
-            R.layout.native_small_ads_with_button_above,
-            R.layout.shimmer_native_small_with_button_above
+        AdsHelper.loadNative(
+            activity = this,
+            lifecycleOwner = this,
+            frAds = binding.frAds,
+            remoteKeyMain = Constants.RemoteKeys.native_intro,
+            remoteKeySecondary = Constants.RemoteKeys.native_intro_2,
+            type = NativeType.NATIVE_SMALL_ABOVE
         )
-
     }
 
 

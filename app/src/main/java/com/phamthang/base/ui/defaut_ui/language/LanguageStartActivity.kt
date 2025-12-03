@@ -24,6 +24,8 @@ import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.DataProject
 import com.phamthang.base.utils.SystemUtil
 import com.phamthang.base.R
+import com.phamthang.base.ads.AdsHelper
+import com.phamthang.base.ads.NativeType
 import com.phamthang.base.databinding.ActivityLanguageBinding
 import com.phamthang.base.ui.defaut_ui.language.adapter.LanguageAdapter
 import com.phamthang.base.ui.defaut_ui.language.model.LanguageModel
@@ -75,7 +77,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         }
         setUpListLang()
         loadBannerSettingForTech()
-        loadNativeLanguage()
     }
 
     override fun bindViewModel() {
@@ -117,14 +118,14 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     private fun setUpListLang() {
-        val nativeManager = loadNative(
+
+        val nativeManager = AdsHelper.loadNative(
+            activity = this,
+            lifecycleOwner = this,
             frAds = binding.frAds,
             remoteKeyMain = Constants.RemoteKeys.native_language,
             remoteKeySecondary = Constants.RemoteKeys.native_language_2,
-            adsKeyMain = Constants.AdsKey.native_language,
-            adsKeySecondary = Constants.AdsKey.native_language_2,
-            idLayoutShimmer = R.layout.shimmer_native_large_with_button_above,
-            idLayoutNative = R.layout.native_large_ads_with_button_above,
+            type = NativeType.NATIVE_LARGE_ABOVE
         )
 
         adapter = LanguageAdapter(
@@ -255,17 +256,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         )
     }
 
-    private fun loadNativeLanguage() {
-        loadNative(
-            binding.frAds,
-            Constants.RemoteKeys.native_language,
-            Constants.RemoteKeys.native_language_2,
-            Constants.AdsKey.native_language,
-            Constants.AdsKey.native_language_2,
-            R.layout.native_large_ads_with_button_above,
-            R.layout.shimmer_native_large_with_button_above,
-        )
-    }
 
     private fun showNativeLanguagePreloadAtSplash() {
         if (nativeLanguageMainPreload != null && !SplashActivity.Companion.isShowNativeLanguagePreloadAtSplash) {

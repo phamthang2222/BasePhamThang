@@ -37,6 +37,7 @@ object Constants {
         const val native_popup = "native_popup"
         const val collapse_banner = "collapse_banner"
         const val collapse_preview = "collapse_preview"
+        const val native_banner = "native_banner"
         const val native_all = "native_all"
         const val inter_all = "inter_all"
         const val native_pin = "native_pin"

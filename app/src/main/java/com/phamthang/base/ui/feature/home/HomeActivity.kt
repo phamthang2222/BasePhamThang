@@ -6,19 +6,21 @@ import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.custome_view.BottomViewNav
 import com.phamthang.base.extention.clickVibrate
 import com.phamthang.base.R
+import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.databinding.ActivityHomeBinding
+import com.phamthang.base.utils.Constants
 
 
 class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
 
-    private val bottomNavItems : Map<Int, BottomViewNav> by lazy {
+    private val bottomNavItems: Map<Int, BottomViewNav> by lazy {
         mapOf(
             R.id.homeFragment to binding.home,
             R.id.statisticFragment to binding.statistic,
             R.id.settingsFragment to binding.settings
         )
     }
-   
+
     override fun createViewModel(): Class<HomeVM> = HomeVM::class.java
 
     override fun getViewDataBinding(): ActivityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
@@ -26,6 +28,14 @@ class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
     override fun initView() {
         enableEdgeToEdge()
         onBottomClick()
+
+        AdsHelper.loadCollapseBanner(
+            this,
+            this,
+            Constants.AdsKey.collapse_banner,
+            Constants.RemoteKeys.collapse_banner,
+            binding.collapsibleBannerContainerView
+        )
     }
 
     override fun bindViewModel() {

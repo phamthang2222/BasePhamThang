@@ -5,6 +5,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.phamthang.base.ads.AdsHelper
+import com.phamthang.base.ads.NativeType
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityPermissionBinding
@@ -28,6 +30,15 @@ class PermissionActivity : BaseActivity<CommonVM, ActivityPermissionBinding>() {
 
     override fun initView() {
         EventTrackingHelper.logEvent(this, Constants.TrackingKeys.permission_open)
+        AdsHelper.loadNative(
+            this,
+            this,
+            frAds = binding.frAds,
+            remoteKeyMain = Constants.RemoteKeys.native_per,
+            remoteKeySecondary = Constants.RemoteKeys.native_per,
+            type = NativeType.NATIVE_LARGE_ABOVE
+        )
+
         PERMISSION = PermissionManager.PERMISSION_IN_APP[0]
         perStorageLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
@@ -56,7 +67,6 @@ class PermissionActivity : BaseActivity<CommonVM, ActivityPermissionBinding>() {
 
         binding.tvContinue.tap {
             EventTrackingHelper.logEvent(this, Constants.TrackingKeys.permission_continue_click)
-            SharedPrefManager.saveBoolean(SharedPrefManager.FIRST_OPEN_APP, false)
             showActivity(HomeActivity::class.java, null)
             finishAffinity()
         }
@@ -68,9 +78,11 @@ class PermissionActivity : BaseActivity<CommonVM, ActivityPermissionBinding>() {
         when {
             PermissionManager.hasPermission(permission, this) -> {
             }
+
             PermissionManager.shouldShowRequestPermissionRationale(this, permission) -> {
                 showPermissionSettingsDialog()
             }
+
             else -> {
                 PermissionManager.requestAPermission(this, permission, launcher)
             }
@@ -94,9 +106,9 @@ class PermissionActivity : BaseActivity<CommonVM, ActivityPermissionBinding>() {
 
     private fun updatePermissionSwitchStates() {
         val isStorage =
-            if(isTiRaMiSu()){
+            if (isTiRaMiSu()) {
                 PermissionManager.hasPermission(Manifest.permission.READ_MEDIA_VIDEO, this)
-            }else{
+            } else {
                 PermissionManager.hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, this)
             }
         binding.swStorage.isChecked = isStorage

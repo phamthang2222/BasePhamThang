@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
+import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.extention.logDebug
 import com.phamthang.base.ui.feature.home.HomeActivity
@@ -14,6 +15,7 @@ import com.phamthang.base.databinding.ActivityLanguageSettingBinding
 import com.phamthang.base.ui.defaut_ui.language.adapter.LanguageAdapter
 import com.phamthang.base.ui.defaut_ui.language.model.LanguageModel
 import com.phamthang.base.ui.defaut_ui.language.model.LanguageSubModel
+import com.phamthang.base.utils.Constants
 
 
 class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguageSettingBinding>() {
@@ -34,7 +36,7 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
         setUpListLang()
         binding.rclLanguage.adapter = adapter
 
-//        loadBannerAds(binding.bannerContainerView, Constants.AdsKey.banner_setting)
+        AdsHelper.loadBannerAds(this,this,binding.bannerContainerView, Constants.AdsKey.banner_setting)
     }
 
     private fun setUpListLang() {
