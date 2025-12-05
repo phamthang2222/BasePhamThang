@@ -9,7 +9,6 @@ class App : AdsApplication(){
 
     override fun onCreate() {
         super.onCreate()
-        SharedPrefManager.init(this)
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
 
     }
