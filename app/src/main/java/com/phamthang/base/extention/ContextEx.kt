@@ -7,6 +7,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.VibrationEffect
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.phamthang.base.R
 import com.phamthang.base.utils.PermissionManager
+import java.util.Locale
 
 fun Context.copyToClipboard(text: String, view: View) {
     val clip = ClipData.newPlainText("", text)
@@ -170,4 +172,17 @@ fun Context.launchActivityIntent(intent: Intent) {
     } catch (e: Exception) {
         toast(e.message.toString())
     }
+}
+
+fun Context.getLocalizedString(languageCode: String, resId: Int): String {
+    val localeParts = languageCode.split("-")
+    val myLocale = if (localeParts.size > 1) {
+        Locale(localeParts[0], localeParts[1])
+    } else {
+        Locale(languageCode)
+    }
+    val config = Configuration(resources.configuration)
+    config.setLocale(myLocale)
+    val localizedContext = createConfigurationContext(config)
+    return localizedContext.resources.getString(resId)
 }

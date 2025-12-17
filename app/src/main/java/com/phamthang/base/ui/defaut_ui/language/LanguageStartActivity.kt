@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.RemoteConfigHelper
@@ -27,6 +28,7 @@ import com.phamthang.base.R
 import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.ads.NativeType
 import com.phamthang.base.databinding.ActivityLanguageBinding
+import com.phamthang.base.extention.getLocalizedString
 import com.phamthang.base.ui.defaut_ui.language.adapter.LanguageAdapter
 import com.phamthang.base.ui.defaut_ui.language.model.LanguageModel
 import com.phamthang.base.ui.defaut_ui.language.model.LanguageSubModel
@@ -40,6 +42,7 @@ import com.phamthang.base.utils.Constants.AdsKey.native_intro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+import androidx.core.content.edit
 
 
 class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBinding>() {
@@ -132,8 +135,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
             setLanguageDefault(),
             onClickSubLanguage = {
                 logDebug(message = "ChekClickLFO: onClickSubLanguage: ${it.languageName}-${it.isoLanguage} ")
-                binding.ivDone.alpha = 1f
-                binding.ivDone.isEnabled = true
                 EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose)
                 if (!isChooseLanguage) {
                     if (countOpenSplash <= 10) {
@@ -146,16 +147,14 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 translate((model as LanguageSubModel).isoLanguage)
             },
             onClickDropDown = {
-                logDebug(message = "ChekClickLFO: onClickDropDown")
-                nativeManager?.cancelAutoReloadNative()
+                nativeManager.cancelAutoReloadNative()
                 showNativeLanguageClickPreloadAtSplash()
             },
             onClickSingleLanguage = {
-                logDebug(message = "ChekClickLFO: onClickSingleLanguage: ${it.languageName}-${it.isoLanguage}")
                 binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
                 model = it
                 translate((model as LanguageModel).isoLanguage)
-                nativeManager?.cancelAutoReloadNative()
+                nativeManager.cancelAutoReloadNative()
                 showNativeLanguageClickPreloadAtSplash()
             }
         )
@@ -164,7 +163,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
 
     private fun setLanguageDefault(): List<LanguageModel> {
         val lists: MutableList<LanguageModel> = DataProject.listLanguage()
-
         return lists
     }
 
@@ -180,12 +178,13 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     fun ivDone(v: View) {
-        binding.rlContent.visibility = View.GONE
-        binding.llApplyLanguage.visibility = View.VISIBLE
+        binding.rlContent.isVisible = false
+        binding.llApplyLanguage.isVisible = true
         preloadANativeMainIntro()
         lifecycleScope.launch {
             delay(5000L)
-            if (Admob.getInstance().checkCondition(this@LanguageStartActivity, Constants.AdsKey.inter_splash) &&
+            if (
+                Admob.getInstance().checkCondition(this@LanguageStartActivity, Constants.AdsKey.inter_splash) &&
                 !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
                 Admob.getInstance().interstitialAdSplashHigh != null
             ) {
@@ -195,7 +194,8 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                         startNextAct()
                     }
                 }, false, Constants.RemoteKeys.inter_splash)
-            } else if (Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
+            } else if (
+                Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
                 !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
                 Admob.getInstance().interstitialAdSplash != null
             ) {
@@ -215,33 +215,15 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     private fun startNextAct() {
         EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_save_click)
         if (countOpenSplash < 11) EventTrackingHelper.logEvent(this, "language_fo_save_click_$countOpenSplash")
-        val editor = getSharedPreferences("MY_PRE", MODE_PRIVATE).edit()
-        editor.putBoolean("openLanguage", true)
-        editor.apply()
+        getSharedPreferences("MY_PRE", MODE_PRIVATE).edit { putBoolean("openLanguage", true) }
         if (model is LanguageSubModel) {
-            SystemUtil.setPreLanguage(this@LanguageStartActivity, (model as LanguageSubModel).isoLanguage)
-            SystemUtil.setPreLanguageName(this, (model as LanguageSubModel).languageName)
+            SystemUtil.setLanguage(this, (model as LanguageSubModel).isoLanguage, (model as LanguageSubModel).languageName)
         } else {
-            SystemUtil.setPreLanguage(this@LanguageStartActivity, (model as LanguageModel).isoLanguage)
-            SystemUtil.setPreLanguageName(this, (model as LanguageModel).languageName)
+            SystemUtil.setLanguage(this, (model as LanguageModel).isoLanguage, (model as LanguageModel).languageName)
         }
         SystemUtil.setLocale(this)
         showActivity(TutorialActivity::class.java, null)
         finish()
-    }
-
-
-    private fun getLocalizedString(context: Context, languageCode: String, resId: Int): String {
-        val localeParts = languageCode.split("-")
-        val myLocale = if (localeParts.size > 1) {
-            Locale(localeParts[0], localeParts[1])
-        } else {
-            Locale(languageCode)
-        }
-        val config = Configuration(context.resources.configuration)
-        config.setLocale(myLocale)
-        val localizedContext = context.createConfigurationContext(config)
-        return localizedContext.resources.getString(resId)
     }
 
     //ads
@@ -289,9 +271,9 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         val isArabic = code == "ar"
         window.decorView.layoutDirection = if (isArabic) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
 
-        binding.tvHeader.text = getLocalizedString(this, code, R.string.please_select_language_to_continue)
-        binding.tvLanguage.text = getLocalizedString(this, code, R.string.language)
-        binding.tvTitleApply.text = getLocalizedString(this, code, R.string.title_apply_lfo)
-        binding.tvContentApply.text = getLocalizedString(this, code, R.string.apply_lfo)
+        binding.tvHeader.text = getLocalizedString(code, R.string.please_select_language_to_continue)
+        binding.tvLanguage.text = getLocalizedString(code, R.string.language)
+        binding.tvTitleApply.text = getLocalizedString(code, R.string.title_apply_lfo)
+        binding.tvContentApply.text = getLocalizedString(code, R.string.apply_lfo)
     }
 }

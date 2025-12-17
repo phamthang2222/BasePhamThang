@@ -44,6 +44,7 @@ import com.phamthang.base.ui.defaut_ui.no_internet.NetworkReceiver
 import com.phamthang.base.ui.defaut_ui.splash.SplashActivity
 import com.phamthang.base.ui.defaut_ui.welcome_back.WelcomeBackActivity
 import com.phamthang.base.ui.feature.home.HomeActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject

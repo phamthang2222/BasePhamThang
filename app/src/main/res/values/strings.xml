@@ -48,5 +48,9 @@
     <string name="label_permission">Permission</string>
     <string name="apply_lfo">We\'re setting up your language preferences.</string>
     <string name="title_apply_lfo">Applying your language settings</string>
-
+    <string name="unlock_function">Unlock download items</string>
+    <string name="main_reword">Watch an ad now to unlock\nexclusive wallpaper resources!</string>
+    <string name="watch_video">Watch Video</string>
+    <string name="content_2_reward_1">Watch 2 videos ads\nto unlock all item</string>
+    <string name="content_2_reward_2">Watch 2 videos ads to unlock all item in this category</string>
 </resources>

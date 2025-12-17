@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import java.util.Locale
+import androidx.core.content.edit
 
 object SystemUtil {
     private var myLocale: Locale? = null
@@ -80,13 +81,18 @@ object SystemUtil {
             return
         } else {
             val preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE)
-            preferences.edit().putString("KEY_LANGUAGE", language).apply()
+            preferences.edit { putString("KEY_LANGUAGE", language) }
         }
     }
 
     fun setPreLanguageName(context: Context, languageName: String?) {
         val preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE)
-        preferences.edit().putString("KEY_LANGUAGE_NAME", languageName).apply()
+        preferences.edit { putString("KEY_LANGUAGE_NAME", languageName) }
+    }
+
+    fun setLanguage(context: Context, language: String?, languageName: String?) {
+        setPreLanguage(context, language)
+        setPreLanguageName(context, languageName)
     }
 
     fun getLanguageApp(): MutableList<String?> {

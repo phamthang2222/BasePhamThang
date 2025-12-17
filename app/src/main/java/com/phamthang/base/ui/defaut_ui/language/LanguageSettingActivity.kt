@@ -24,7 +24,6 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
     private var model : Any? = null
     private var sharedPreferences: SharedPreferences? = null
     private var currentLanguage : LanguageModel? = null
-
     private var currentApiVersion = 0
 
     override fun createViewModel(): Class<LanguageViewModel> = LanguageViewModel::class.java
@@ -97,12 +96,10 @@ class LanguageSettingActivity : BaseActivity<LanguageViewModel, ActivityLanguage
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     fun ivDone(v: View) {
         getSharedPreferences("MY_PRE", MODE_PRIVATE).edit() { putBoolean("openLanguage", true) }
-        if(model is LanguageSubModel){
-            SystemUtil.setPreLanguage(this@LanguageSettingActivity, (model as LanguageSubModel).isoLanguage)
-            SystemUtil.setPreLanguageName(this, (model as LanguageSubModel).languageName)
-        }else{
-            SystemUtil.setPreLanguage(this@LanguageSettingActivity, (model as LanguageModel).isoLanguage)
-            SystemUtil.setPreLanguageName(this, (model as LanguageModel).languageName)
+        if (model is LanguageSubModel) {
+            SystemUtil.setLanguage(this, (model as LanguageSubModel).isoLanguage, (model as LanguageSubModel).languageName)
+        } else {
+            SystemUtil.setLanguage(this, (model as LanguageModel).isoLanguage, (model as LanguageModel).languageName)
         }
         SystemUtil.setLocale(this)
         startNextAct()

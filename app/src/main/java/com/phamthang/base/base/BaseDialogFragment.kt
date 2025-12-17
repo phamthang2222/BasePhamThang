@@ -1,8 +1,6 @@
 package com.phamthang.base.base
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,44 +12,32 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.phamthang.base.R
 import com.phamthang.base.extention.isRPlus
+import com.phamthang.base.extention.logError
 import com.phamthang.base.utils.SystemUtil
 
 
-abstract class BaseDialogFragment<VB : ViewBinding>(
-    private val canCancelable: Boolean = false
-) : DialogFragment() {
+abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     private var _binding: VB? = null
-    val isBindingNull get() = _binding == null
-    val binding get() = _binding!!
+    protected val binding: VB
+        get() = _binding ?: throw IllegalStateException("Binding is only valid between onCreateView and onDestroyView")
 
-    lateinit var mActivity: Activity
+    protected open val isDialogCancelable: Boolean = false
+
+    protected open val hideSystemBars: Boolean = true
 
     abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
     abstract fun initView()
     abstract fun bindView()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCancelable = canCancelable
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (isRPlus()) {
-            dialog?.window?.insetsController?.let { controller ->
-                controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
-                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
+         setStyle(STYLE_NORMAL, R.style.BaseDialog)
+        isCancelable = isDialogCancelable
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = Dialog(requireContext(), R.style.BaseDialog)
-        return dialog
+        return Dialog(requireContext(), R.style.BaseDialog)
     }
 
     override fun onCreateView(
@@ -59,9 +45,9 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        SystemUtil.setLocale(requireContext())
+        context?.let { SystemUtil.setLocale(it) }
+
         _binding = getViewBinding(inflater, container)
-        mActivity = requireActivity()
         return binding.root
     }
 
@@ -71,20 +57,38 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         bindView()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (hideSystemBars && isRPlus()) {
+            dialog?.window?.insetsController?.let { controller ->
+                controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        }
+        // Xử lý độ rộng dialog nếu cần (thường dialog sẽ bị co lại)
+//         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    open fun showDialog(manager: FragmentManager) {
-        if (!isAdded) {
-            show(manager, tag)
+
+    open fun safeShow(manager: FragmentManager, tag: String? = null) {
+        val tagName = tag ?: this::class.java.simpleName
+        if (manager.isStateSaved || isAdded || isVisible) return
+        try {
+            show(manager, tagName)
+        } catch (e: Exception) {
+            logError(message = "safeShow: ${e.message}")
+            e.printStackTrace()
         }
     }
 
     open fun dismissDialog() {
-        if (isAdded ) {
-            dismiss()
+        if (isAdded || isVisible) {
+            dismissAllowingStateLoss()
         }
     }
 }

@@ -9,8 +9,10 @@ import com.phamthang.base.R
 import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.databinding.ActivityHomeBinding
 import com.phamthang.base.utils.Constants
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
 
     private val bottomNavItems: Map<Int, BottomViewNav> by lazy {
