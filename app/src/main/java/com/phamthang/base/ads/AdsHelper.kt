@@ -21,7 +21,7 @@ import com.amazic.library.ads.native_ads.NativeManager
 import com.amazic.library.ads.reward_ads.RewardManager
 import com.amazic.library.organic.TechManager
 import com.phamthang.base.R
-import com.phamthang.base.ui.defaut_ui.splash.SplashActivity
+import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.utils.Constants
 
 object AdsHelper {

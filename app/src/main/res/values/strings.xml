@@ -43,6 +43,7 @@
     <string name="home">Home</string>
     <string name="statistic">Statistic</string>
     <string name="settings">Settings</string>
+    <string name="version">Version: %s</string>
 
     <string name="content_permission">This app needs permissions below to work properly</string>
     <string name="label_permission">Permission</string>
@@ -53,4 +54,7 @@
     <string name="watch_video">Watch Video</string>
     <string name="content_2_reward_1">Watch 2 videos ads\nto unlock all item</string>
     <string name="content_2_reward_2">Watch 2 videos ads to unlock all item in this category</string>
+    <string name="label_rate">Rate</string>
+    <string name="label_share">Share</string>
+    <string name="label_private_policy">Private policy</string>
 </resources>

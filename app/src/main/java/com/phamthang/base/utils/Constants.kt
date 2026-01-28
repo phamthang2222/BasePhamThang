@@ -109,6 +109,10 @@ object Constants {
 
         const val home_open = "home_open"
         const val home_view = "home_view"
+        const val setting_view = "setting_view"
+        const val setting_language_click = "setting_language_click"
+        const val setting_policy_click = "setting_policy_click"
+        const val setting_share_click = "setting_share_click"
 
 
 

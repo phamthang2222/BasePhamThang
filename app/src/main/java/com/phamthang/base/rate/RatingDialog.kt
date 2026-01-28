@@ -49,6 +49,7 @@ class RatingDialog(private val context: Context) : Dialog(context, R.style.Custo
         tvContent.text = text
         rtb.progress = 5
         btnRate.setEnableState(rtb.progress != 0)
+        setCancelable(false)
         onclick()
         changeRating()
         EventTrackingHelper.logEvent(context, Constants.TrackingKeys.rate_show)

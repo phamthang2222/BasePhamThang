@@ -14,6 +14,7 @@ class SharePrefApp @Inject constructor(
 
         const val FIRST_OPEN_APP = "FIRST_OPEN_APP"
         const val RATING_APPEAR = "RatingAppear"
+        const val APP_RATED = "APP_RATED"
 
     }
 
@@ -23,7 +24,7 @@ class SharePrefApp @Inject constructor(
     var listThemeFree : Set<String>
         get() = sharePref.getStringSet(FREE_THEME_VOICE_LOCK_IDS, emptySet()) ?: emptySet()
         set(value) = sharePref.edit() { putStringSet(FREE_THEME_VOICE_LOCK_IDS, value) }
-
+    // first open app
     var isFirstOpenApp : Boolean
         get() = sharePref.getBoolean(FIRST_OPEN_APP, true)
         set(value) = sharePref.edit() { putBoolean(FIRST_OPEN_APP, value) }
@@ -40,5 +41,8 @@ class SharePrefApp @Inject constructor(
             putInt(RATING_APPEAR, value + 1)
         }
     }
-
+    //rating
+    var isRated : Boolean
+        get() = sharePref.getBoolean(APP_RATED, false)
+        set(value) { sharePref.edit { putBoolean(APP_RATED, value) } }
 }

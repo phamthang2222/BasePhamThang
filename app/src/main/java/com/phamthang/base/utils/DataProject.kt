@@ -1,8 +1,8 @@
 package com.phamthang.base.utils
 
 import com.phamthang.base.R
-import com.phamthang.base.ui.defaut_ui.language.model.LanguageModel
-import com.phamthang.base.ui.defaut_ui.language.model.LanguageSubModel
+import com.phamthang.base.ui.default_ui.language.model.LanguageModel
+import com.phamthang.base.ui.default_ui.language.model.LanguageSubModel
 
 object DataProject {
 
@@ -64,7 +64,7 @@ object DataProject {
                 "Indonesian", "in", false, R.drawable.ic_indo_flag,
                 mutableListOf(
                     LanguageSubModel(R.drawable.flag_indo_spain, "Indonesian (Standard)", "in", false),
-                    LanguageSubModel(R.drawable.flag_indo_japan, "Indonesian (Japanese-influenced)", "in", false),
+                    LanguageSubModel(R.drawable.flag_indo_spain, "Indonesian (Javanese-influenced)", "in", false),
                     LanguageSubModel(R.drawable.flag_indo_spain, "Indonesian (Informal, English combined)", "in", false)
                 )
             )

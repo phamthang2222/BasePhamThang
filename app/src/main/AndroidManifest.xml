@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.splash.SplashActivity"
+            android:name="com.phamthang.base.ui.default_ui.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
@@ -39,27 +39,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.permission.PermissionActivity"
+            android:name="com.phamthang.base.ui.default_ui.permission.PermissionActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.tutorial.TutorialActivity"
+            android:name=".ui.default_ui.language.LanguageSettingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.language.LanguageStartActivity"
+            android:name="com.phamthang.base.ui.default_ui.tutorial.TutorialActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+        <activity
+            android:name="com.phamthang.base.ui.default_ui.language.LanguageStartActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.language.LanguageSettingActivity"
+            android:name="com.phamthang.base.ui.default_ui.language.LanguageSettingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
-            android:name="com.phamthang.base.ui.defaut_ui.no_internet.NoInternetActivity"
+            android:name="com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
