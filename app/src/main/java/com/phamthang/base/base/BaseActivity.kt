@@ -1,8 +1,10 @@
 package com.phamthang.base.base
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -10,6 +12,8 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +31,7 @@ import com.phamthang.base.utils.SystemUtil
 import com.phamthang.base.R
 import com.phamthang.base.share_pref.SharePrefApp
 import com.phamthang.base.ui.default_ui.no_internet.NetworkReceiver
+import com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.ui.default_ui.welcome_back.WelcomeBackActivity
 import com.phamthang.base.ui.feature.home.HomeActivity
@@ -40,7 +45,25 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     abstract fun getViewDataBinding(): T
     abstract fun initView()
     abstract fun bindViewModel()
-    open fun onBackPressCustom() {}
+
+    open fun onBackPressCustom() {
+        onBackPressedCallback.isEnabled = false
+        onBackPressedDispatcher.onBackPressed()
+        onBackPressedCallback.isEnabled = true
+    }
+
+    open fun shouldAllowBackWithoutId(): Boolean {
+        return false
+    }
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val icBack = findViewById<View>(R.id.icBack)
+            if (icBack != null || shouldAllowBackWithoutId()) {
+                onBackPressCustom()
+            }
+        }
+    }
     lateinit var viewModel: VM
     lateinit var binding: T
 
@@ -61,29 +84,29 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         binding = getViewDataBinding()
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[createViewModel()]
-        /*  networkReceiver = NetworkReceiver {
-              if (!it) {
-                  showActivityCustom(NoInternetActivity::class.java, null)
-              } else {
-                  if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) != Constants.ScreenKey.SPLASH_ACTIVITY) {
-                      finish()
-                  } else if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) == Constants.ScreenKey.SPLASH_ACTIVITY) {
-                      val myIntent = Intent(this, SplashActivity::class.java)
-                      myIntent.flags =
-                          Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                      startActivity(myIntent)
-                  }
-              }
-          }
-          if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-              registerReceiver(
-                  networkReceiver,
-                  IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
-                  RECEIVER_EXPORTED
-              )
-          } else {
-              registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
-          }*/
+        networkReceiver = NetworkReceiver {
+            if (!it) {
+                showActivityCustom(NoInternetActivity::class.java, null)
+            } else {
+                if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) != Constants.ScreenKey.SPLASH_ACTIVITY) {
+                    finish()
+                } else if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) == Constants.ScreenKey.SPLASH_ACTIVITY) {
+                    val myIntent = Intent(this, SplashActivity::class.java)
+                    myIntent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(myIntent)
+                }
+            }
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                networkReceiver,
+                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
+                RECEIVER_EXPORTED
+            )
+        } else {
+            registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
+        }
         initView()
         bindViewModel()
         baseView()
@@ -156,16 +179,11 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     }
 
     private fun baseView() {
-        val icBack = binding.root.findViewById<View>(R.id.icBack)
-        icBack?.tap { finish() }
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                onBackPressCustom()
-                icBack?.performClick()
-            }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        val icBack = findViewById<View>(R.id.icBack)
+        icBack?.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
-        onBackPressedDispatcher.addCallback(this@BaseActivity, onBackPressedCallback)
-
         //rating, first open
         if (this is HomeActivity) {
             sharePrefApp.increaseCountRatingAppear()

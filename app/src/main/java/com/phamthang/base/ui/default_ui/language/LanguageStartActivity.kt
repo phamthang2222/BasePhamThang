@@ -40,6 +40,8 @@ import com.phamthang.base.utils.Constants.AdsKey.native_intro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.core.content.edit
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 
 
 class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBinding>() {
@@ -49,6 +51,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     private var isPause = false
     private val TAG = "LanguageStartActivity"
     private var countOpenSplash = 1L
+    private var timeDelayToLoadAds = 1000L
 
     companion object {
         var isLogEventLanguageUserView = false
@@ -177,34 +180,48 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     fun ivDone(v: View) {
         binding.rlContent.isVisible = false
         binding.llApplyLanguage.isVisible = true
-        preloadANativeMainIntro()
         lifecycleScope.launch {
-            delay(5000L)
-            if (
-                Admob.getInstance().checkCondition(this@LanguageStartActivity, Constants.AdsKey.inter_splash) &&
-                !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
-                Admob.getInstance().interstitialAdSplashHigh != null
-            ) {
-                Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplashHigh, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
-                        startNextAct()
-                    }
-                }, false, Constants.RemoteKeys.inter_splash)
-            } else if (
-                Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
-                !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
-                Admob.getInstance().interstitialAdSplash != null
-            ) {
-                Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplash, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
-                        startNextAct()
-                    }
-                }, false, Constants.RemoteKeys.inter_splash)
-            } else {
-                startNextAct()
+            // Chờ tối đa 5000ms (timeDelayToLoadAds)
+            withTimeoutOrNull(timeDelayToLoadAds) {
+                val deferred = CompletableDeferred<Unit>()
+
+                preloadANativeMainIntro {
+                    deferred.complete(Unit) // Đánh dấu là đã nhận được kết quả (thành công hoặc thất bại)
+                }
+
+                deferred.await() // Tạm dừng coroutine tại đây cho đến khi complete() được gọi
             }
+
+            // Ngay khi Native Ad tải xong HOẶC hết 5s timeout,
+            showInterAndNextAct()
+        }
+    }
+    
+    private fun showInterAndNextAct(){
+        if (
+            Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
+            !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
+            Admob.getInstance().interstitialAdSplashHigh != null
+        ) {
+            Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplashHigh, object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    startNextAct()
+                }
+            }, false, Constants.RemoteKeys.inter_splash)
+        } else if (
+            Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
+            !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
+            Admob.getInstance().interstitialAdSplash != null
+        ) {
+            Admob.getInstance().showInterAds(this@LanguageStartActivity, Admob.getInstance().interstitialAdSplash, object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    startNextAct()
+                }
+            }, false, Constants.RemoteKeys.inter_splash)
+        } else {
+            startNextAct()
         }
     }
 
@@ -244,7 +261,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         }
     }
 
-    private fun preloadANativeMainIntro() {
+    private fun preloadANativeMainIntro(onAdLoaded: () -> Unit) {
         if (!TechManager.getInstance().isTech(this)) {
             Admob.getInstance().loadNativeAds(
                 this,
@@ -253,6 +270,8 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
                         nativeIntroPreload = nativeAd
+                        logDebug(message = "ChekClickLFO: onNativeAdLoaded: ${nativeIntroPreload}")
+                        onAdLoaded()
                     }
 
                     override fun onAdImpression() {
@@ -261,6 +280,8 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                     }
                 }, native_intro
             )
+        } else {
+            onAdLoaded()
         }
     }
 

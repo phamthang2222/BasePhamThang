@@ -57,4 +57,5 @@
     <string name="label_rate">Rate</string>
     <string name="label_share">Share</string>
     <string name="label_private_policy">Private policy</string>
+    <string name="setting">Setting</string>
 </resources>

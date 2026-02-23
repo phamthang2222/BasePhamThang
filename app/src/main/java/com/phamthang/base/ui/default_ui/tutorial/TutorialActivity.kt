@@ -30,6 +30,7 @@ import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityTutorialBinding
 import com.phamthang.base.rate.showRate
 import com.phamthang.base.ui.default_ui.language.LanguageStartActivity
+import com.phamthang.base.ui.default_ui.permission.PermissionActivity
 import com.phamthang.base.ui.default_ui.wellcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -240,7 +241,7 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
             showActivity(HomeActivity::class.java, null)
             finishAffinity()
         } else {
-            showActivity(WelcomeActivity::class.java, null)
+            showActivity(PermissionActivity::class.java, null)
             finishAffinity()
         }
 

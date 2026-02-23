@@ -38,13 +38,6 @@
 
 -keep class * implements dagger.hilt.EntryPoint
 
--keep public class * extends androidx.fragment.app.Fragment {
-    public <init>();
-}
-
--keep public class * extends androidx.appcompat.app.AppCompatActivity {
-    public <init>();
-}
 
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
