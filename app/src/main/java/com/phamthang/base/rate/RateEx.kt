@@ -8,7 +8,8 @@ import com.phamthang.base.share_pref.SharePrefApp
 
 fun Activity.showRate(
     sharePrefApp: SharePrefApp,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    onDismiss: () -> Unit,
 ){
     val ratingDialog = RatingDialog(this)
     ratingDialog.init(this, object : RatingDialog.OnPress {
@@ -35,12 +36,12 @@ fun Activity.showRate(
         }
 
         override fun cancel() {
-            onSuccess()
+            onDismiss()
             logDebug(tagSpecial = "showRatingDialog", message = "cancel")
         }
 
         override fun later() {
-            onSuccess()
+            onDismiss()
             logDebug(tagSpecial = "showRatingDialog", message = "later")
         }
     })

@@ -213,6 +213,9 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
                 sharePrefApp = sharePrefApp,
                 onSuccess = {
                     showInter()
+                },
+                onDismiss = {
+                    showInter()
                 }
             )
         } else {

@@ -58,9 +58,14 @@ class SettingActivity : BaseActivity<CommonVM, ActivitySettingBinding>(){
             policy()
         }
         binding.llRate.clickWithBounce {
-            showRate(sharePrefApp = sharePrefApp){
-                binding.llRate.visibility = View.GONE
-            }
+            showRate(
+                sharePrefApp = sharePrefApp,
+                onSuccess = {
+                    binding.llRate.visibility = View.GONE
+                },
+                onDismiss = {
+
+                })
         }
 
         binding.tvCurrentLanguage.text = getCurrentLanguage()
