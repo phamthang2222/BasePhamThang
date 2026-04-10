@@ -40,6 +40,7 @@ import com.phamthang.base.utils.Constants.AdsKey.native_intro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.core.content.edit
+import com.amazic.library.ads.inter_ads.InterManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -180,19 +181,19 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     fun ivDone(v: View) {
         binding.rlContent.isVisible = false
         binding.llApplyLanguage.isVisible = true
+        InterManager.loadInterAdPreload(
+            this,
+            Constants.AdsKey.inter_intro,
+            Constants.RemoteKeys.inter_intro,
+        )
         lifecycleScope.launch {
-            // Chờ tối đa 5000ms (timeDelayToLoadAds)
             withTimeoutOrNull(timeDelayToLoadAds) {
                 val deferred = CompletableDeferred<Unit>()
-
                 preloadANativeMainIntro {
-                    deferred.complete(Unit) // Đánh dấu là đã nhận được kết quả (thành công hoặc thất bại)
+                    deferred.complete(Unit)
                 }
-
-                deferred.await() // Tạm dừng coroutine tại đây cho đến khi complete() được gọi
+                deferred.await()
             }
-
-            // Ngay khi Native Ad tải xong HOẶC hết 5s timeout,
             showInterAndNextAct()
         }
     }

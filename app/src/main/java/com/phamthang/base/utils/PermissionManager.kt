@@ -59,10 +59,8 @@ object PermissionManager {
      *
      * @return true nếu cần hiển thị lời giải thích, ngược lại false.
      */
-    fun shouldShowRequestPermissionRationale(activity: Activity, permission1: String): Boolean {
-        return PERMISSION_IN_APP.any { permission ->
-            ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
-        }
+    fun shouldShowRequestPermissionRationale(activity: Activity, permission: String): Boolean {
+        return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
     }
 
 
@@ -107,10 +105,10 @@ object PermissionManager {
     fun requestAPermission(
         context: Context,
         permission: String,
-        launcher: ActivityResultLauncher<Array<String>>
+        launcher: ActivityResultLauncher<String>
     ) {
         if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            launcher.launch(arrayOf(permission))
+            launcher.launch(permission)
         }
     }
 }

@@ -64,6 +64,7 @@ fun <T> Fragment.observeViewState(
                 (activity as? BaseActivity<*, *>)?.hideLoading()
                 onError?.invoke(state.message)
             }
+            else -> {}
         }
     }
 }

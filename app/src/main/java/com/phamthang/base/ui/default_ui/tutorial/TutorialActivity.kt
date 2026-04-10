@@ -14,7 +14,9 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
+import com.amazic.library.ads.admob.AdmobApi
 import com.amazic.library.organic.TechManager
+import com.google.android.gms.ads.interstitial.InterstitialAdPreloader
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.phamthang.base.base.BaseActivity
@@ -226,13 +228,22 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     }
 
     private fun showInter() {
-        AdsHelper.loadAndShowInter(
+        AdsHelper.showInterPreload(
             this,
             Constants.AdsKey.inter_intro,
-            Constants.RemoteKeys.inter_intro
-        ) {
-            startNextAct()
-        }
+            Constants.RemoteKeys.inter_intro,
+            onNextAction = {
+                startNextAct()
+
+            },
+            onImpression = {
+                InterstitialAdPreloader.destroy(
+                    AdmobApi.getInstance().getListIDByName(
+                        Constants.AdsKey.inter_intro,
+                    )[0]
+                )
+            }
+        )
     }
 
     private fun startNextAct() {

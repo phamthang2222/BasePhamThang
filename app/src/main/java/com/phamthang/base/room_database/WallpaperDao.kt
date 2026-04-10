@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.phamthang.base.model.Wallpaper
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WallpaperDao {
@@ -18,7 +19,7 @@ interface WallpaperDao {
 
     //get
     @Query("SELECT * FROM WALLPAPER_TABLE")
-    fun getAllWallpaper(): LiveData<List<Wallpaper>>
+    fun getAllWallpaper(): Flow<List<Wallpaper>>
 
     @Query("SELECT * FROM WALLPAPER_TABLE")
     suspend fun getAllWallpaperList(): List<Wallpaper>

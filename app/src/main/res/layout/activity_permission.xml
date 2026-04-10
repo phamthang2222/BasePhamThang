@@ -76,6 +76,7 @@
                         android:textSize="14sp" />
 
                     <RelativeLayout
+                        android:id="@+id/rlWriteStorage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_white_r16"
@@ -102,6 +103,33 @@
                             android:thumb="@drawable/custom_thumb"
                             app:track="@drawable/custom_track" />
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_white_r16"
+                        android:paddingHorizontal="@dimen/_15sdp"
+                        android:paddingVertical="@dimen/_10sdp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="Camera"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/swCamera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:checked="false"
+                            android:scaleX="0.75"
+                            android:scaleY="0.75"
+                            android:thumb="@drawable/custom_thumb"
+                            app:track="@drawable/custom_track" />
+                    </RelativeLayout>
+
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 

@@ -20,11 +20,12 @@ import com.amazic.library.ads.native_ads.NativeBuilder
 import com.amazic.library.ads.native_ads.NativeManager
 import com.amazic.library.ads.reward_ads.RewardManager
 import com.amazic.library.organic.TechManager
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.phamthang.base.R
 import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.utils.Constants
 
-object AdsHelper {
+public object AdsHelper {
     fun dismissAppOpen(activity: Activity) {
         AppOpenManager.getInstance().disableAppResumeWithActivity(activity.javaClass)
     }
@@ -70,48 +71,94 @@ object AdsHelper {
     }
 
     //inter
-    fun loadAndShowInter(
+    fun loadAndShowInterPreload(
         activity: Activity,
-        remoteKey: String,
-        adsKey: String = remoteKey,
+        remoteKey: String = Constants.RemoteKeys.inter_all,
+        adsKey: String = Constants.AdsKey.inter_all,
         onNextAction: () -> Unit
     ) {
-        InterManager.loadAndShowInterAds(activity, adsKey, remoteKey, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction.invoke()
+        InterManager.loadAndShowInterAdsPreload(
+            activity,
+            adsKey,
+            remoteKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    if(remoteKey == Constants.RemoteKeys.inter_all){
+                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
+                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
+                    }
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    if(remoteKey == Constants.RemoteKeys.inter_all){
+                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
+                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
+                    }
+                }
+
             }
-        })
+        )
     }
 
-    fun loadAndShowInterAll(
-        activity: Activity,
-        adsKey: String = Constants.AdsKey.inter_all,
-        remoteKey: String = Constants.RemoteKeys.inter_all,
-        isOpenActivityAfterShowInterAds: Boolean = true,
-        onNextAction: () -> Unit
+
+    fun showInterPreload(
+        activity: Activity?,
+        adsKey: String?,
+        remoteKey: String?,
+        onNextAction: () -> Unit,
+        onLoaded: (() -> Unit)? = null,
+        onFailed: (() -> Unit)? = null,
+        onDismiss: (() -> Unit)? = null,
+        onImpression: (() -> Unit)? = null,
     ) {
-        if (!isOpenActivityAfterShowInterAds) {
-            Admob.getInstance().isOpenActivityAfterShowInterAds = false
-        }
-        InterManager.loadAndShowInterAds(activity, adsKey, remoteKey, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
-                onNextAction.invoke()
-            }
+        InterManager.showInterAdPreload(
+            activity,
+            adsKey,
+            remoteKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
 
-            override fun onAdDismissedFullScreenContent() {
-                super.onAdDismissedFullScreenContent()
-                val time = RemoteConfigHelper.getInstance().get_config_long(activity, Constants.RemoteKeys.interval_inter_all) * 1000
-                if (time > 0) Admob.getInstance().setTimeInterval(time, false)
-            }
+                override fun onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent()
+                }
 
-            override fun onAdFailedToShowFullScreenContent() {
-                super.onAdFailedToShowFullScreenContent()
-                val time = RemoteConfigHelper.getInstance().get_config_long(activity, Constants.RemoteKeys.interval_inter_all) * 1000
-                if (time > 0) Admob.getInstance().setTimeInterval(time, false)
-            }
-        })
+                override fun onAdLoaded(interstitialAd: InterstitialAd?) {
+                    super.onAdLoaded(interstitialAd)
+                    onLoaded?.invoke()
+                }
+
+                override fun onAdFailedToShowFullScreenContent() {
+                    super.onAdFailedToShowFullScreenContent()
+                    onFailed?.invoke()
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    onFailed?.invoke()
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    onDismiss?.invoke()
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    onImpression?.invoke()
+                }
+            },
+            true
+        )
     }
 
     //native
@@ -179,34 +226,6 @@ object AdsHelper {
 
     }
 
-    fun loadNativeBanner(
-        activity: AppCompatActivity,
-        frAds: FrameLayout,
-        remoteKey: String = Constants.RemoteKeys.native_banner,
-        adsKey: String = Constants.RemoteKeys.native_banner,
-        lifecycleOwner: LifecycleOwner,
-        callBack: NativeCallback? = null
-    ): NativeManager? {
-        val idLayoutShimmer = R.layout.shimmer_native_super_small
-        val idLayoutNative = R.layout.native_small_ads_meta
-        val idNativeMeta = R.layout.native_small_ads_meta
-
-        val nativeBuilder = NativeBuilder(activity, frAds, idLayoutShimmer, idLayoutNative, idNativeMeta, true)
-        nativeBuilder.setListIdAdMain(AdmobApi.getInstance().getListIDByName(adsKey))
-        //set secondary list id ads if load double native
-        nativeBuilder.setListIdAdSecondary(AdmobApi.getInstance().getListIDByName(adsKey))
-        if (callBack != null) {
-            nativeBuilder.callback = callBack
-        }
-        val nativeManager = NativeManager(activity, lifecycleOwner, nativeBuilder, remoteKey, remoteKey)
-        nativeManager.timeOutCallAds = 12000
-        nativeManager.setIntervalReloadNative(
-            RemoteConfigHelper.getInstance().get_config_long(activity, Constants.RemoteKeys.interval_reload_native) * 1000
-        )
-        nativeManager.setAlwaysReloadOnResume(true)
-        return nativeManager
-    }
-
     fun loadNativeAll(
         activity: AppCompatActivity,
         frAds: FrameLayout,
@@ -222,7 +241,7 @@ object AdsHelper {
             remoteKeyMain = remoteKey,
             adsKeyMain = adsKey,
             callBack = callBack,
-            type = NativeType.NATIVE_SMALL_ABOVE
+            type = NativeType.NATIVE_LARGE_ABOVE
         )
     }
 

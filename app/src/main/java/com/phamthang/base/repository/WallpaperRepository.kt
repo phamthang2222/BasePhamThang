@@ -1,11 +1,9 @@
 package com.phamthang.base.repository
 
-import com.phamthang.base.room_database.WallpaperDao
-import javax.inject.Inject
+import com.phamthang.base.model.Wallpaper
+import kotlinx.coroutines.flow.Flow
 
-class WallpaperRepository @Inject constructor(
-    private val wallpaperDao: WallpaperDao
-){
-
-
+interface  WallpaperRepository{
+    suspend fun getAllWallpaper(): Flow<List<Wallpaper>>
+    suspend fun insert(wallpaper: Wallpaper)
 }

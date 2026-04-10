@@ -31,11 +31,13 @@ import com.phamthang.base.databinding.ActivitySplashBinding
 import com.phamthang.base.ui.default_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.default_ui.welcome_back.WelcomeBackActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
+@AndroidEntryPoint
+class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     private val TAG = "SplashActivity"
     private var jsonIdAdsDefault = ""
     private var isHandleAsyncSplash = false
@@ -110,7 +112,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
         }
     }
 
-    override fun createViewModel(): Class<CommonVM> = CommonVM::class.java
+    override fun createViewModel(): Class<SplashVM> = SplashVM::class.java
     override fun getViewDataBinding(): ActivitySplashBinding = ActivitySplashBinding.inflate(layoutInflater)
 
     override fun initView() {
@@ -188,6 +190,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
             val bundle = Bundle()
             bundle.putString(Constants.ScreenKey.SCREEN, Constants.ScreenKey.SPLASH_ACTIVITY)
             showActivity(NoInternetActivity::class.java, bundle)
+            finish()
         }
     }
 
@@ -215,11 +218,13 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
 //            AsyncSplash.getInstance().setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
             //If app use billing IAP
 //            AsyncSplash.getInstance().setUseBilling(arrayListOf())
+            AsyncSplash.getInstance().setUseAdPreloading(true)
             AsyncSplash.getInstance().handleAsync(
                 this@SplashActivity, this@SplashActivity, lifecycleScope,
                 onAsyncSplashDone = {
                     preloadANativeMainLanguage()
                     preloadANativeClickLanguage()
+                    AsyncSplash.getInstance().setKeyNumberPreloading("number_ad_preload")
                 },
                 onNoInternetAction = {
                     interCallback.onNextAction()
@@ -300,8 +305,6 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
 
     private fun startNextAct() {
         progressJob?.cancel()
-        binding.tvPercent.text = getString(R.string.loading, 99)
-        binding.progressIndicator.progress = 99
 
         val bundle = Bundle()
         bundle.putString(Constants.ScreenKey.SCREEN, Constants.ScreenKey.SPLASH_ACTIVITY)
@@ -328,7 +331,7 @@ class SplashActivity : BaseActivity<CommonVM, ActivitySplashBinding>() {
                 binding.progressIndicator.progress = i
                 binding.tvPercent.text = getString(R.string.loading, i)
                 this@SplashActivity.timeStart = i
-                delay(60)
+                delay(30)
             }
             onComplete()
         }

@@ -21,12 +21,11 @@ object DatabaseModule {
             applicationContext,
             WallpaperDatabase::class.java,
             "app_database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     @Singleton
-    fun provideNotificationDao(database: WallpaperDatabase) = database.dao()
-
+    fun provideWallpaperDao(database: WallpaperDatabase) = database.dao()
 
 }
