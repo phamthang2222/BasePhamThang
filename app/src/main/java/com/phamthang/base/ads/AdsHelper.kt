@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.RemoteConfigHelper
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.admob.AdmobApi
@@ -24,15 +25,20 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.phamthang.base.R
 import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.utils.Constants
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 public object AdsHelper {
     fun dismissAppOpen(activity: Activity) {
         AppOpenManager.getInstance().disableAppResumeWithActivity(activity.javaClass)
     }
 
-    fun enableAppOpen(activity: Activity) {
+    fun enableAppOpen(activity: Activity, lifecycleOwner: LifecycleOwner) {
         if (activity !is SplashActivity) {
-            AppOpenManager.getInstance().enableAppResumeWithActivity(activity.javaClass)
+            lifecycleOwner.lifecycleScope.launch {
+                delay(500L)
+                AppOpenManager.getInstance().enableAppResumeWithActivity(activity.javaClass)
+            }
         } else dismissAppOpen(activity)
     }
 
