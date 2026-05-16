@@ -1,78 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_activity">
+    android:background="@color/bg_activity"
+    android:fillViewport="true"
+    android:overScrollMode="never">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rl_img"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/tv_title"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
 
         <ImageView
             android:id="@+id/img_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:maxWidth="400dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/img_intro_1" />
+
+        <TextView
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_alignParentStart="true"
-            android:scaleType="fitStart"
-            android:src="@drawable/img_intro_1"
-            app:layout_constraintDimensionRatio="360:500"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginTop="16dp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:text="@string/title_intro_1"
+            android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginTop="8dp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/lato_medium"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="@dimen/_5sdp"
+            android:maxLines="3"
+            android:text="@string/content_intro_1"
+            android:textColor="@color/neutral_500"
+            android:textSize="14sp" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
-        android:layout_marginTop="20dp"
+    </LinearLayout>
 
-        android:autoSizeMaxTextSize="20sp"
-        android:autoSizeMinTextSize="10sp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-
-        android:fontFamily="@font/lato_bold"
-        android:gravity="center_horizontal"
-        android:maxLines="1"
-        android:text="@string/title_intro_1"
-        android:textColor="@color/neutral_800"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rl_img" />
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/lato_medium"
-        android:gravity="center_horizontal"
-
-        android:autoSizeTextType="uniform"
-        android:autoSizeMaxTextSize="14sp"
-        android:autoSizeMinTextSize="10sp"
-        android:autoSizeStepGranularity="1sp"
-
-        android:lineSpacingMultiplier="0.7"
-        android:lineSpacingExtra="@dimen/_5sdp"
-        android:maxLines="2"
-
-        android:text="@string/content_intro_1"
-        android:textColor="@color/neutral_500"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
