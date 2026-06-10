@@ -1,9 +1,10 @@
 package com.phamthang.base.model
 
+import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import kotlin.text.endsWith
 import kotlin.text.lowercase
 
@@ -44,6 +45,12 @@ data class Wallpaper(
         } else {
             PHOTO
         }
+    }
+
+    override fun describeContents(): Int = 0
+
+    override fun writeToParcel(p0: Parcel, p1: Int) {
+
     }
 
 }

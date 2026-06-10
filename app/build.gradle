@@ -1,33 +1,31 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.google.gms.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.hilt)
-    id ("kotlin-kapt")
+
     id("kotlin-parcelize")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace 'com.phamthang.base'
-    compileSdk 35
+    compileSdk 37
 
     defaultConfig {
         applicationId "com.phamthang.base"
         minSdk 24
-        targetSdk 35
+        //noinspection EditedTargetSdkVersion
+        targetSdk 37
         versionCode 100
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        def formattedDate = new Date().format('MM.dd.yyyy')
-        archivesBaseName = "Base_v${versionName}_${formattedDate}"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -48,9 +46,6 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
 
     bundle {
         language {
@@ -71,7 +66,15 @@ android {
     }
 }
 
+def formattedDate = new Date().format('MM.dd.yyyy')
+base {
+    archivesName = "App47_ChatAi_v${android.defaultConfig.versionName}_${formattedDate}"
+}
+
+
 dependencies {
+    implementation(libs.kotlin.parcelize.runtime)
+    implementation libs.androidx.activity.ktx
 
     // AndroidX & Google Material
     implementation(libs.androidx.core.ktx)
@@ -107,7 +110,6 @@ dependencies {
     implementation(libs.google.play.review)
     implementation(libs.facebook.shimmer)
     implementation(libs.google.play.services.ads)
-    implementation(libs.google.play.services.auth)
     implementation(libs.google.ads.mediation.facebook)
     implementation(libs.google.ads.mediation.vungle)
     implementation(libs.google.ads.mediation.applovin)
@@ -156,5 +158,5 @@ dependencies {
 
     //hilt
     implementation libs.hilt.android
-    kapt libs.hilt.compiler
+    ksp libs.hilt.compiler
 }

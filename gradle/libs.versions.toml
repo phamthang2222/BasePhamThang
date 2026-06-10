@@ -1,12 +1,14 @@
 [versions]
-agp = "8.6.0"
+agp = "9.2.1"
+billing = "9.0.0"
 exifinterface = "1.3.7"
-hiltAndroid = "2.55"
-kotlin = "2.1.10"
+hiltAndroid = "2.59.2"
+kotlin = "2.3.21"
+ksp = "2.3.7"
 googleServices = "4.4.4"
-firebaseCrashlyticsPlugin = "3.0.6"
+firebaseCrashlyticsPlugin = "3.0.7"
 #----------------------
-coreKtx = "1.16.0"
+coreKtx = "1.15.0"
 appcompat = "1.7.1"
 material = "1.13.0"
 constraintlayout = "2.2.1"
@@ -18,50 +20,56 @@ multidex = "2.0.1"
 junit = "4.13.2"
 junitExt = "1.3.0"
 espressoCore = "3.7.0"
-glide = "5.0.5"
+glide = "5.0.7"
+okhttp = "5.3.2"
 sdp = "1.1.1"
 segmentationSelfie = "16.0.0-beta6"
 ssp = "1.1.1"
+adsLibrary = "1.1.2"
 amazicLibrary = "2.3.9"
 playReview = "2.0.2"
 shimmer = "0.5.0"
-playServicesAds = "25.1.0"
+playServicesAds = "25.3.0"
 ucrop = "2.2.11"
 workRuntime = "2.11.0"
 firebaseAnalytics = "23.2.0"
-firebaseMessaging = "25.0.1"
-firebaseCrashlytics = "20.0.4"
-firebaseConfig = "23.0.1"
-firebaseFirestore = "26.1.2"
+firebaseMessaging = "25.0.2"
+firebaseCrashlytics = "20.0.6"
+firebaseConfig = "23.1.0"
+firebaseFirestore = "26.3.0"
 firebaseFirestoreKtx = "25.1.4"
 playServicesAuth = "21.5.1"
-mediationFacebook = "6.21.0.2"
-mediationVungle = "7.7.2.0"
+mediationFacebook = "6.21.0.3"
+mediationVungle = "7.7.3.0"
 mediationApplovin = "13.6.2.0"
-mediationPangle = "7.9.1.3.0"
-mediationIronsource = "9.3.0.2"
-unityAds = "4.17.0"
+mediationPangle = "8.0.0.4.0"
+mediationIronsource = "9.4.2.0"
+unityAds = "4.18.0"
 mediationUnity = "4.17.0.0"
-mediationMintegral = "17.1.31.0"
+mediationMintegral = "17.1.51.0"
 facebookSdk = "18.2.3"
-gson = "2.13.2"
+gson = "2.14.0"
 retrofit = "3.0.0"
-room = "2.6.1"
+room = "2.8.4"
 appUpdate = "2.1.0"
 lottie = "6.7.1"
 eventbus = "3.3.1"
 animatoo = "1.0.1"
 dotIndicator = "5.1.0"
 legacySupportV4 = "1.0.0"
-lifecycleLivedataKtx = "2.10.0"
+lifecycleLivedataKtx = "2.9.2"
 fragmentKtx = "1.8.9"
 media3Exoplayer = "1.8.0"
+activityKtx = "1.10.1"
+kotlinParcelize = "2.3.21"
 
 [libraries]
 # AndroidX & Google Material
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
@@ -72,6 +80,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycle" }
 androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycle" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+kotlin-parcelize-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -82,6 +91,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 # SDP & SSP
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 sdp-android = { group = "com.intuit.sdp", name = "sdp-android", version.ref = "sdp" }
 segmentation-selfie = { module = "com.google.mlkit:segmentation-selfie", version.ref = "segmentationSelfie" }
 ssp-android = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "ssp" }
@@ -141,7 +151,7 @@ androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ve
 
 #hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 
 #media
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
@@ -150,14 +160,15 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "medi
 
 #other
 recyclerview_animators = {group= "jp.wasabeef", name ="recyclerview-animators", version = "4.0.2"}
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-gms-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version = "2.1.10-1.0.29" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
