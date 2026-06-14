@@ -1,5 +1,7 @@
 package com.phamthang.base.ui.feature.home.fragment_settings
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import com.phamthang.base.base.BaseFragment
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.FragmentSettingsBinding
@@ -7,7 +9,10 @@ import com.phamthang.base.databinding.FragmentSettingsBinding
 class SettingsFragment : BaseFragment<CommonVM, FragmentSettingsBinding>() {
     override fun createViewModel(): Class<CommonVM> = CommonVM::class.java
 
-    override fun getViewDataBinging(): FragmentSettingsBinding = FragmentSettingsBinding.inflate(layoutInflater)
+    override fun getViewDataBinging(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentSettingsBinding = FragmentSettingsBinding.inflate(inflater, container, false)
 
     override fun initView() {
 

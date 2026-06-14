@@ -84,33 +84,41 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         binding = getViewDataBinding()
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[createViewModel()]
-        networkReceiver = NetworkReceiver {
-            if (!it) {
-                showActivityCustom(NoInternetActivity::class.java, null)
-            } else {
-                if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) != Constants.ScreenKey.SPLASH_ACTIVITY) {
-                    finish()
-                } else if (this is NoInternetActivity && intent?.extras?.getString(Constants.ScreenKey.SCREEN) == Constants.ScreenKey.SPLASH_ACTIVITY) {
-                    val myIntent = Intent(this, SplashActivity::class.java)
-                    myIntent.flags =
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(myIntent)
-                }
-            }
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(
-                networkReceiver,
-                IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"),
-                RECEIVER_EXPORTED
-            )
-        } else {
-            registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
-        }
+        setupNetworkReceiver()
         initView()
         bindViewModel()
         baseView()
 
+    }
+
+    private fun setupNetworkReceiver() {
+        networkReceiver = NetworkReceiver { isConnected ->
+            onNetworkChanged(isConnected)
+        }
+        val intentFilter = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(networkReceiver, intentFilter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(networkReceiver, intentFilter)
+        }
+    }
+
+    open fun onNetworkChanged(isConnected: Boolean) {
+        if (!isConnected) {
+            showActivityCustom(NoInternetActivity::class.java, null)
+        } else {
+            if (this is NoInternetActivity) {
+                val screen = intent?.extras?.getString(Constants.ScreenKey.SCREEN)
+                if (screen == Constants.ScreenKey.SPLASH_ACTIVITY) {
+                    val myIntent = Intent(this, SplashActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(myIntent)
+                } else {
+                    finish()
+                }
+            }
+        }
     }
 
 
@@ -129,7 +137,13 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
 
     override fun onDestroy() {
         super.onDestroy()
-//        unregisterReceiver(networkReceiver)
+        networkReceiver?.let {
+            try {
+                unregisterReceiver(it)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.unregisterListener(it) }
     }
 
@@ -182,14 +196,8 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         val icBack = findViewById<View>(R.id.icBack)
         icBack?.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            onBackPressCustom()
         }
-        //rating, first open
-        if (this is HomeActivity) {
-            sharePrefApp.increaseCountRatingAppear()
-            if (sharePrefApp.isFirstOpenApp) sharePrefApp.isFirstOpenApp = false
-        }
-
     }
 
 

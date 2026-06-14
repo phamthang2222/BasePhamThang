@@ -31,6 +31,9 @@ class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
         enableEdgeToEdge()
         onBottomClick()
 
+        sharePrefApp.increaseCountRatingAppear()
+        if (sharePrefApp.isFirstOpenApp) sharePrefApp.isFirstOpenApp = false
+
         AdsHelper.loadCollapseBanner(
             this,
             this,

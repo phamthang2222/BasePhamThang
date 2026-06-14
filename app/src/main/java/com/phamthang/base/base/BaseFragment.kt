@@ -18,10 +18,14 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
     var TAG = "BaseFragment"
 
     lateinit var viewModel: VM
-    lateinit var binding: T
+    
+    private var _binding: T? = null
+    protected val binding get() = _binding!!
+
     lateinit var activity: Activity
     lateinit var baseActivity :  BaseActivity<*,*>
-    val isBindingInitializer get() = ::binding.isInitialized
+    
+    val isBindingInitializer get() = _binding != null
     private var isPostedUpdateRecentEvent = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +33,6 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
         activity = requireActivity()
         baseActivity = requireActivity() as BaseActivity<*,*>
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onAttach(context: Context) {
@@ -43,20 +46,23 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = getViewDataBinging()
+        _binding = getViewDataBinging(inflater, container)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
         bindViewModel()
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     abstract fun createViewModel(): Class<VM>
-    abstract fun getViewDataBinging(): T
+    abstract fun getViewDataBinging(inflater: LayoutInflater, container: ViewGroup?): T
     abstract fun initView()
     abstract fun bindViewModel()
 

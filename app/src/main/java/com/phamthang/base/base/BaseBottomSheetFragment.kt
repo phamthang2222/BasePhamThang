@@ -16,7 +16,8 @@ import com.phamthang.base.extention.logError
 
 abstract class BaseBottomSheetFragment<VB : ViewBinding>(private val isCancel: Boolean = true) : BottomSheetDialogFragment() {
 
-    lateinit var binding: VB
+    private var _binding: VB? = null
+    protected val binding get() = _binding!!
 
     protected abstract fun initView()
     protected abstract fun setViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
@@ -27,14 +28,19 @@ abstract class BaseBottomSheetFragment<VB : ViewBinding>(private val isCancel: B
         savedInstanceState: Bundle?
     ): View? {
         activity?.let { SystemUtil.setLocale(it) }
-        binding = setViewBinding(inflater, container)
+        _binding = setViewBinding(inflater, container)
         isCancelable = isCancel
-        initView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onStart() {
