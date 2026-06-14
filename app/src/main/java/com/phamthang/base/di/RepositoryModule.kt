@@ -1,6 +1,6 @@
 package com.phamthang.base.di
 
-import com.phamthang.base.repository.WallpaperRepository
+import com.phamthang.base.domain.repository.WallpaperRepository
 import com.phamthang.base.repository.WallpaperRepositoryImpl
 import dagger.Binds
 import dagger.Module

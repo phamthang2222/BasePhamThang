@@ -1,6 +1,7 @@
 package com.phamthang.base.ui.default_ui.language
 
-import androidx.lifecycle.ViewModel
+import com.phamthang.base.base.BaseViewModel
 
-class LanguageViewModel : ViewModel() {
+class LanguageViewModel : BaseViewModel<Unit, Unit>() {
+    override fun initialState() = Unit
 }

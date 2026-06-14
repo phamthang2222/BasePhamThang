@@ -2,19 +2,23 @@ package com.phamthang.base.base
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.phamthang.base.utils.SystemUtil
+import kotlinx.coroutines.launch
 
-
-abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
+/**
+ * BaseFragment nâng cấp hỗ trợ Clean Architecture và Flow.
+ */
+abstract class BaseFragment<VM : BaseViewModel<*, *>, T : ViewBinding> : Fragment() {
     var TAG = "BaseFragment"
 
     lateinit var viewModel: VM
@@ -23,15 +27,12 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
     protected val binding get() = _binding!!
 
     lateinit var activity: Activity
-    lateinit var baseActivity :  BaseActivity<*,*>
+    lateinit var baseActivity: BaseActivity<*, *>
     
-    val isBindingInitializer get() = _binding != null
-    private var isPostedUpdateRecentEvent = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         SystemUtil.setLocale(requireContext())
         activity = requireActivity()
-        baseActivity = requireActivity() as BaseActivity<*,*>
+        baseActivity = requireActivity() as BaseActivity<*, *>
         super.onCreate(savedInstanceState)
     }
 
@@ -54,7 +55,21 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         bindViewModel()
+        observeStateInternal()
     }
+
+    private fun observeStateInternal() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeState()
+            }
+        }
+    }
+
+    /**
+     * Chịu trách nhiệm quan sát UI State và UI Event từ ViewModel.
+     */
+    open fun observeState() {}
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -65,20 +80,4 @@ abstract class BaseFragment<VM : ViewModel, T : ViewBinding> : Fragment() {
     abstract fun getViewDataBinging(inflater: LayoutInflater, container: ViewGroup?): T
     abstract fun initView()
     abstract fun bindViewModel()
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
-    fun showActivity(act: Class<*>, bundle: Bundle?) {
-        val intent = Intent(activity, act)
-        intent.putExtras(bundle ?: Bundle())
-        startActivity(intent)
-    }
-
-    inline fun <reified VM : ViewModel> Fragment.activityViewModel(): VM {
-        return ViewModelProvider(requireActivity())[VM::class.java]
-    }
-
 }

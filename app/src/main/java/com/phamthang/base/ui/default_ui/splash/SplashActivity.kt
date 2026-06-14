@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-
 import androidx.lifecycle.lifecycleScope
 import com.amazic.library.Utils.EventTrackingHelper
 import com.amazic.library.Utils.NetworkUtil
@@ -22,15 +21,14 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.InstallStatus
-import com.phamthang.base.base.BaseActivity
-import com.phamthang.base.base.CommonVM
-import com.phamthang.base.extention.toast
-import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
+import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.databinding.ActivitySplashBinding
+import com.phamthang.base.extention.toast
 import com.phamthang.base.ui.default_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.default_ui.welcome_back.WelcomeBackActivity
+import com.phamthang.base.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -61,7 +59,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     private val openCallback = object : AppOpenCallback() {
         override fun onNextAction() {
             super.onNextAction()
-//            startNextAct()
         }
 
         override fun onAdShowedFullScreenContent() {
@@ -88,7 +85,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     private val interCallback = object : InterCallback() {
         override fun onNextAction() {
             super.onNextAction()
-//            startNextAct()
         }
 
         override fun onAdShowedFullScreenContent() {
@@ -118,7 +114,7 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     override fun initView() {
         if (!isTaskRoot
             && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
-            && intent.action != null && intent.action.equals(Intent.ACTION_MAIN)
+            && intent.action != null && intent.action == Intent.ACTION_MAIN
         ) {
             finish()
             return
@@ -144,7 +140,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
             }
 
             override fun onUpdateApplicationSuccess() {
-
             }
 
             override fun onMustNotUpdateApplication() {
@@ -173,18 +168,13 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
                     state.installStatus() == InstallStatus.CANCELED ||
                     state.installStatus() == InstallStatus.UNKNOWN
                 ) {
-                    Log.d(TAG, "initView: appUpdateManage")
                     handleAsyncSplashJustOnce()
                 } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                    Log.d(TAG, "initView: appUpdateManager_${appUpdateManager}")
                     Toast.makeText(applicationContext, applicationContext.getString(R.string.updated_and_ready_welcome_back), Toast.LENGTH_SHORT)
                         .show()
                     appUpdateManager?.completeUpdate()
-                } else {
-                    Log.d(TAG, "initView: appUpdateManage else")
                 }
             }
-            Log.d(TAG, "appUpdateManager register. ${appUpdateManager}_${installStateUpdatedListener}")
             installStateUpdatedListener?.let { appUpdateManager?.registerListener(it) }
         } else {
             val bundle = Bundle()
@@ -195,7 +185,7 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     }
 
     private fun handleAsyncSplashJustOnce() {
-        if (!isHandleAsyncSplash) { //important
+        if (!isHandleAsyncSplash) {
             AsyncSplash.getInstance().init(
                 activity = this@SplashActivity,
                 appOpenCallback = openCallback,
@@ -205,19 +195,10 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
                 appId = getString(R.string.app_id),
                 jsonIdAdsDefault = jsonIdAdsDefault
             )
-            //Test TechManager
-            AsyncSplash.getInstance().setDebug(false) //Production set to false
+            AsyncSplash.getInstance().setDebug(false)
             AsyncSplash.getInstance().setAsyncSplashAds()
-            //AsyncSplash.getInstance().setLoadAndShowIdInterAdSplashAsync() //Nếu request load đồng thời inter_splash va inter_splash_high
             AsyncSplash.getInstance().setListTurnOffRemoteKeys(addListTurnOffRemoteKeys())
-            //Case without welcome back
-//            AsyncSplash.getInstance().setInitResumeAdsNormal()
-            //Case welcome back above ads resume
             AsyncSplash.getInstance().setInitWelcomeBackAboveResumeAds(WelcomeBackActivity::class.java)
-            //Case welcome back below ads resume
-//            AsyncSplash.getInstance().setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
-            //If app use billing IAP
-//            AsyncSplash.getInstance().setUseBilling(arrayListOf())
             AsyncSplash.getInstance().setUseAdPreloading(true)
             AsyncSplash.getInstance().handleAsync(
                 this@SplashActivity, this@SplashActivity, lifecycleScope,
@@ -233,7 +214,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
             isHandleAsyncSplash = true
         }
     }
-
 
     private fun addListTurnOffRemoteKeys(): MutableList<String> {
         return mutableListOf(
@@ -261,11 +241,9 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     }
 
     override fun bindViewModel() {
-
     }
 
     override fun onBackPressCustom() {
-
     }
 
     private fun preloadANativeMainLanguage() {
@@ -305,12 +283,13 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
 
     private fun startNextAct() {
         progressJob?.cancel()
-
         val bundle = Bundle()
         bundle.putString(Constants.ScreenKey.SCREEN, Constants.ScreenKey.SPLASH_ACTIVITY)
-        showActivity(LanguageStartActivity::class.java, bundle)
+        val intent = Intent(this, LanguageStartActivity::class.java).apply {
+            putExtras(bundle)
+        }
+        startActivity(intent)
         finish()
-
     }
 
     override fun onResume() {
@@ -325,7 +304,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
 
     private fun startProgress(timeStart: Int, onComplete: () -> Unit) {
         progressJob?.cancel()
-
         progressJob = lifecycleScope.launch {
             for (i in timeStart..99) {
                 binding.progressIndicator.progress = i

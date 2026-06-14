@@ -1,6 +1,5 @@
 package com.phamthang.base.base
 
-import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -12,39 +11,40 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.amazic.library.ads.admob.Admob
 import com.amazic.library.ads.app_open_ads.AppOpenManager
 import com.google.android.play.core.install.model.InstallStatus
+import com.phamthang.base.R
 import com.phamthang.base.custome_view.LoadingView
 import com.phamthang.base.extention.hideNavigation
-import com.phamthang.base.extention.tap
-
-import com.phamthang.base.utils.Constants
-import com.phamthang.base.utils.SystemUtil
-import com.phamthang.base.R
 import com.phamthang.base.share_pref.SharePrefApp
 import com.phamthang.base.ui.default_ui.no_internet.NetworkReceiver
 import com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.ui.default_ui.welcome_back.WelcomeBackActivity
-import com.phamthang.base.ui.feature.home.HomeActivity
+import com.phamthang.base.utils.Constants
+import com.phamthang.base.utils.SystemUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity() {
+/**
+ * BaseActivity nâng cấp hỗ trợ Clean Architecture và Flow.
+ */
+abstract class BaseActivity<VM : BaseViewModel<*, *>, T : ViewBinding> : AppCompatActivity() {
 
     abstract fun createViewModel(): Class<VM>
     abstract fun getViewDataBinding(): T
     abstract fun initView()
     abstract fun bindViewModel()
+
+    open fun observeState() {}
 
     open fun onBackPressCustom() {
         onBackPressedCallback.isEnabled = false
@@ -67,10 +67,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     lateinit var viewModel: VM
     lateinit var binding: T
 
-    private val TAG = "BaseActivity"
-    private var currentApiVersion = 0
     private var networkReceiver: NetworkReceiver? = null
-
     private lateinit var loadingDialog: Dialog
 
     @Inject
@@ -87,8 +84,16 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         setupNetworkReceiver()
         initView()
         bindViewModel()
+        observeStateInternal()
         baseView()
+    }
 
+    private fun observeStateInternal() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                observeState()
+            }
+        }
     }
 
     private fun setupNetworkReceiver() {
@@ -105,7 +110,7 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
 
     open fun onNetworkChanged(isConnected: Boolean) {
         if (!isConnected) {
-            showActivityCustom(NoInternetActivity::class.java, null)
+            showActivity(NoInternetActivity::class.java, null)
         } else {
             if (this is NoInternetActivity) {
                 val screen = intent?.extras?.getString(Constants.ScreenKey.SCREEN)
@@ -121,10 +126,9 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         }
     }
 
-
     open fun showLoading() {
         if (::loadingDialog.isInitialized.not())
-            loadingDialog = LoadingView.Companion.createDialogLoading(this)
+            loadingDialog = LoadingView.createDialogLoading(this)
         if (loadingDialog.isShowing.not())
             loadingDialog.show()
     }
@@ -133,7 +137,6 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         if (::loadingDialog.isInitialized && loadingDialog.isShowing)
             loadingDialog.dismiss()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -144,16 +147,15 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
                 e.printStackTrace()
             }
         }
-        SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.unregisterListener(it) }
+        SplashActivity.installStateUpdatedListener?.let { SplashActivity.appUpdateManager?.unregisterListener(it) }
     }
 
     override fun onResume() {
         super.onResume()
-        SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.registerListener(it) }
-        SplashActivity.Companion.appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
-
+        SplashActivity.installStateUpdatedListener?.let { SplashActivity.appUpdateManager?.registerListener(it) }
+        SplashActivity.appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                SplashActivity.Companion.appUpdateManager?.completeUpdate()
+                SplashActivity.appUpdateManager?.completeUpdate()
             }
         }
         lifecycleScope.launch {
@@ -170,22 +172,15 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
     fun showActivity(activity: Class<*>, bundle: Bundle?) {
         val intent = Intent(this, activity)
         intent.putExtras(bundle ?: Bundle())
-        startActivity(intent)
-    }
-
-    fun showActivityCustom(activity: Class<*>, bundle: Bundle?) {
-        val intent = Intent(this, activity)
-        intent.putExtras(bundle ?: Bundle())
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
 
-
     private fun hideNavigationBar() {
         enableEdgeToEdge()
         window.hideNavigation()
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         this@BaseActivity.window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -200,23 +195,9 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
         }
     }
 
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus) {
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        }
-    }
-
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase?.let {
             SystemUtil.setLocale(it)
         })
     }
-
 }

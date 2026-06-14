@@ -1,7 +1,7 @@
 package com.phamthang.base.ui.default_ui.welcome_back
 
-import androidx.lifecycle.ViewModel
+import com.phamthang.base.base.BaseViewModel
 
-class WelcomeBackViewModel : ViewModel() {
-
+class WelcomeBackViewModel : BaseViewModel<Unit, Unit>() {
+    override fun initialState() = Unit
 }

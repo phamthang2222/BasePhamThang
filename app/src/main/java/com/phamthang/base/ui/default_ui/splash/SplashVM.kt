@@ -1,6 +1,7 @@
 package com.phamthang.base.ui.default_ui.splash
 
-import androidx.lifecycle.ViewModel
+import com.phamthang.base.base.BaseViewModel
 
-class SplashVM : ViewModel(){
+class SplashVM : BaseViewModel<Unit, Unit>() {
+    override fun initialState() = Unit
 }

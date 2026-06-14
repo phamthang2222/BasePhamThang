@@ -1,16 +1,19 @@
 package com.phamthang.base.ui.feature.home
 
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.fragment.NavHostFragment
-import com.phamthang.base.base.BaseActivity
-import com.phamthang.base.custome_view.BottomViewNav
-import com.phamthang.base.extention.clickVibrate
+import androidx.lifecycle.lifecycleScope
 import com.phamthang.base.R
 import com.phamthang.base.ads.AdsHelper
+import com.phamthang.base.base.BaseActivity
+import com.phamthang.base.custome_view.BottomViewNav
 import com.phamthang.base.databinding.ActivityHomeBinding
+import com.phamthang.base.extention.clickVibrate
 import com.phamthang.base.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
@@ -48,11 +51,34 @@ class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            updateBottomNavState(destination.id)
             viewModel.setNavigation(destination.id)
         }
-        viewModel.selectedNav.observe(this) {
-            navController.navigate(it)
+    }
+
+    /**
+     * Quan sát UI State và UI Event theo chuẩn Flow.
+     */
+    override fun observeState() {
+        // Observe UI State
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                updateBottomNavState(state.selectedNav)
+                // Cập nhật các UI khác dựa trên state.wallpapers, state.isLoading, v.v.
+            }
+        }
+
+        // Observe UI Event
+        lifecycleScope.launch {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is HomeEvent.ShowToast -> {
+                        Toast.makeText(this@HomeActivity, event.message, Toast.LENGTH_SHORT).show()
+                    }
+                    HomeEvent.NavigateToSettings -> {
+                        // Xử lý navigation event nếu cần
+                    }
+                }
+            }
         }
     }
 
@@ -65,15 +91,23 @@ class HomeActivity : BaseActivity<HomeVM, ActivityHomeBinding>() {
     private fun onBottomClick() {
         binding.home.clickVibrate {
             viewModel.setNavigation(R.id.homeFragment)
+            navigateTo(R.id.homeFragment)
         }
         binding.statistic.clickVibrate {
             viewModel.setNavigation(R.id.statisticFragment)
+            navigateTo(R.id.statisticFragment)
         }
         binding.settings.clickVibrate {
             viewModel.setNavigation(R.id.settingsFragment)
+            navigateTo(R.id.settingsFragment)
         }
-
     }
 
-
+    private fun navigateTo(destinationId: Int) {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fcvHome) as NavHostFragment
+        val navController = navHostFragment.navController
+        if (navController.currentDestination?.id != destinationId) {
+            navController.navigate(destinationId)
+        }
+    }
 }
