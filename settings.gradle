@@ -27,3 +27,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "BasePhamThang"
 include ':app'
+include ':domain'
+include ':data'
+include ':core:common'
+include ':core:ui'
+include ':feature:home'
+include ':feature:onboarding'

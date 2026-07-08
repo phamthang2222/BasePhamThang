@@ -1,0 +1,25 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'kotlin-parcelize'
+}
+
+android {
+    namespace 'com.phamthang.domain'
+    compileSdk 37
+
+    defaultConfig {
+        minSdk 24
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation libs.androidx.core.ktx
+    implementation "javax.inject:javax.inject:1"
+    api libs.androidx.room.runtime
+    implementation libs.kotlin.parcelize.runtime
+}

@@ -1,0 +1,37 @@
+plugins {
+    alias(libs.plugins.android.library)
+    id 'kotlin-parcelize'
+    id 'com.google.dagger.hilt.android'
+    alias(libs.plugins.kotlin.ksp)
+}
+
+android {
+    namespace 'com.phamthang.data'
+    compileSdk 37
+
+    defaultConfig {
+        minSdk 24
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation project(':domain')
+    implementation project(':core:common')
+
+    implementation libs.androidx.core.ktx
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.gson
+    implementation libs.gson
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    implementation libs.androidx.lifecycle.livedata.ktx
+    ksp libs.androidx.room.compiler
+    
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+}

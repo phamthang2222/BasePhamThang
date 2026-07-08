@@ -16,51 +16,62 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
+
         <activity
-            android:name="com.phamthang.base.ui.default_ui.splash.SplashActivity"
+            android:name="com.phamthang.feature.onboarding.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.phamthang.base.ui.feature.home.HomeActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity">
-            <!-- <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
 
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>-->
-        </activity>
         <activity
-            android:name="com.phamthang.base.ui.default_ui.permission.PermissionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
-        <activity
-            android:name=".ui.default_ui.language.LanguageSettingActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
-        <activity
-            android:name="com.phamthang.base.ui.default_ui.tutorial.TutorialActivity"
+            android:name="com.phamthang.feature.home.HomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
         <activity
-            android:name="com.phamthang.base.ui.default_ui.language.LanguageStartActivity"
+            android:name="com.phamthang.feature.onboarding.permission.PermissionActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
 
         <activity
-            android:name="com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity"
+            android:name="com.phamthang.feature.onboarding.LanguageSettingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name="com.phamthang.feature.onboarding.tutorial.TutorialActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name="com.phamthang.feature.onboarding.LanguageStartActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name="com.phamthang.feature.onboarding.no_internet.NoInternetActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name="com.phamthang.feature.onboarding.welcome_back.WelcomeBackActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name="com.phamthang.feature.onboarding.wellcome.WelcomeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />

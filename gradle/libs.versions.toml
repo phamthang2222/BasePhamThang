@@ -62,6 +62,8 @@ fragmentKtx = "1.8.9"
 media3Exoplayer = "1.8.0"
 activityKtx = "1.10.1"
 kotlinParcelize = "2.3.21"
+navigationFragmentKtx = "2.9.8"
+navigationUiKtx = "2.9.8"
 
 [libraries]
 # AndroidX & Google Material
@@ -161,6 +163,8 @@ androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "medi
 #other
 recyclerview_animators = {group= "jp.wasabeef", name ="recyclerview-animators", version = "4.0.2"}
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 
 [plugins]
