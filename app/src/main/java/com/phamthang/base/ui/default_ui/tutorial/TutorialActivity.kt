@@ -11,11 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.amazic.library.Utils.EventTrackingHelper
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.organic.TechManager
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.Utils.RemoteConfigHelper
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.admob.AdmobApi
 import com.google.android.gms.ads.interstitial.InterstitialAdPreloader
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -30,10 +30,13 @@ import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.ads.NativeType
 import com.phamthang.base.base.CommonVM
 import com.phamthang.base.databinding.ActivityTutorialBinding
+import com.phamthang.base.extention.setupCtaZoomAnimation
 import com.phamthang.base.rate.showRate
 import com.phamthang.base.ui.default_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.default_ui.permission.PermissionActivity
 import com.phamthang.base.ui.default_ui.wellcome.WelcomeActivity
+import com.vifarmer.ads.lib.callback.InterCallback
+import com.vifarmer.ads.lib.organic.TechManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,6 +46,8 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     private var countOpenSplash = 1L
     private var isFirst = true
     private var isPause = false
+    private var interstitialAdIntro: InterstitialAd? = null
+    private var isPreloadInterIntro = false
 
     companion object {
         var isLogEventOnboardOpen = false
@@ -228,22 +233,32 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
     }
 
     private fun showInter() {
-        AdsHelper.showInterPreload(
-            this,
-            Constants.AdsKey.inter_intro,
-            Constants.RemoteKeys.inter_intro,
-            onNextAction = {
-                startNextAct()
+        if (interstitialAdIntro!=null) {
+            Admob.getInstance().showInterAds(
+                this,
+                interstitialAdIntro,
+                object : InterCallback() {
+                    override fun onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent()
+                    }
 
-            },
-            onImpression = {
-                InterstitialAdPreloader.destroy(
-                    AdmobApi.getInstance().getListIDByName(
-                        Constants.AdsKey.inter_intro,
-                    )[0]
-                )
+                    override fun onAdFailedToShowFullScreenContent() {
+                        super.onAdFailedToShowFullScreenContent()
+                    }
+
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startNextAct()
+                    }
+                },
+                true,
+                Constants.RemoteKeys.inter_intro,
+            )
+        } else {
+           AdsHelper.loadAndShowInter(this, Constants.AdsKey.inter_intro, Constants.RemoteKeys.inter_intro) {
+                startNextAct()
             }
-        )
+        }
     }
 
     private fun startNextAct() {
@@ -304,9 +319,38 @@ class TutorialActivity : BaseActivity<CommonVM, ActivityTutorialBinding>() {
             binding.llBottom.visible()
             binding.rlBottom.visible()
         }
+        if (mHelpGuid[position].position == 2) {
+            if (interstitialAdIntro==null) {
+                preloadInterIntro()
+            }
+        }
     }
 
+    private fun preloadInterIntro() {
+        if(isPreloadInterIntro){
+            return
+        }
+        isPreloadInterIntro = true
+        Admob.getInstance().loadInterAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(Constants.RemoteKeys.inter_intro),
+            object : InterCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd?) {
+                    super.onAdLoaded(interstitialAd)
+                    interstitialAdIntro = interstitialAd
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                }
+            },
+            Constants.RemoteKeys.inter_intro
+        )
+    }
+
+
     private fun loadNativeIntro() {
+        binding.frAds.setupCtaZoomAnimation()
         AdsHelper.loadNative(
             activity = this,
             lifecycleOwner = this,

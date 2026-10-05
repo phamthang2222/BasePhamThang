@@ -19,8 +19,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.google.android.play.core.install.model.InstallStatus
 import com.phamthang.base.custome_view.LoadingView
 import com.phamthang.base.extention.hideNavigation
@@ -38,6 +38,7 @@ import com.phamthang.base.ui.feature.home.HomeActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity() {
 
@@ -144,20 +145,12 @@ abstract class BaseActivity<VM : ViewModel, T : ViewBinding> : AppCompatActivity
                 e.printStackTrace()
             }
         }
-        SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.unregisterListener(it) }
     }
 
     override fun onResume() {
         super.onResume()
-        SplashActivity.Companion.installStateUpdatedListener?.let { SplashActivity.Companion.appUpdateManager?.registerListener(it) }
-        SplashActivity.Companion.appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
-
-            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                SplashActivity.Companion.appUpdateManager?.completeUpdate()
-            }
-        }
         lifecycleScope.launch {
-            delay(250)
+            delay(250.milliseconds)
             if (Admob.getInstance().checkCondition(this@BaseActivity, Constants.RemoteKeys.resume_wb) &&
                 this@BaseActivity !is SplashActivity &&
                 this@BaseActivity !is WelcomeBackActivity

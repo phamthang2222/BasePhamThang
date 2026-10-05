@@ -53,18 +53,17 @@
 
     <TextView
         android:id="@+id/tv_start"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="16dp"
         android:alpha="0.5"
         android:enabled="false"
         android:fontFamily="@font/lato_bold"
-        android:background="@drawable/bg_blue_r100"
         android:gravity="center"
-        android:paddingVertical="14dp"
         android:text="@string/_continue"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <FrameLayout

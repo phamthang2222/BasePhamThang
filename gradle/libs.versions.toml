@@ -25,8 +25,7 @@ okhttp = "5.3.2"
 sdp = "1.1.1"
 segmentationSelfie = "16.0.0-beta6"
 ssp = "1.1.1"
-adsLibrary = "1.1.2"
-amazicLibrary = "2.3.9"
+adsLibrary = "1.2.6.4_update_fun"
 playReview = "2.0.2"
 shimmer = "0.5.0"
 playServicesAds = "25.3.0"
@@ -41,9 +40,9 @@ firebaseFirestoreKtx = "25.1.4"
 playServicesAuth = "21.5.1"
 mediationFacebook = "6.21.0.3"
 mediationVungle = "7.7.3.0"
-mediationApplovin = "13.6.2.0"
+mediationApplovin = "13.6.4.2"
 mediationPangle = "8.0.0.4.0"
-mediationIronsource = "9.4.2.0"
+mediationIronsource = "9.6.0.1"
 unityAds = "4.18.0"
 mediationUnity = "4.17.0.0"
 mediationMintegral = "17.1.51.0"
@@ -97,7 +96,7 @@ segmentation-selfie = { module = "com.google.mlkit:segmentation-selfie", version
 ssp-android = { group = "com.intuit.ssp", name = "ssp-android", version.ref = "ssp" }
 
 # Ads & Mediation
-amazic-library = { group = "com.github.DuongNT3012", name = "AmazicLibrary", version.ref = "amazicLibrary" }
+ads-library = { group = "com.github.ruanyangshuaige", name = "VIFarmerAdsLib", version.ref = "adsLibrary" }
 google-play-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
 facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer" }
 google-play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }

@@ -2,8 +2,8 @@ package com.phamthang.base.ui.default_ui.setting
 
 import android.view.View
 import androidx.lifecycle.lifecycleScope
-import com.amazic.library.Utils.EventTrackingHelper
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.review.ReviewInfo

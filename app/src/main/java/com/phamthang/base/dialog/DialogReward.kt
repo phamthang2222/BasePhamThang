@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import com.amazic.library.ads.admob.Admob
+import com.vifarmer.ads.lib.admob.Admob
 import com.phamthang.base.R
 import com.phamthang.base.base.BaseDialogFragment
 import com.phamthang.base.databinding.DialogRewardBinding

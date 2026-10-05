@@ -3,21 +3,16 @@ package com.phamthang.base.ui.default_ui.language
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import com.amazic.library.Utils.EventTrackingHelper
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.callback.BannerCallback
-import com.amazic.library.ads.callback.InterCallback
-import com.amazic.library.ads.callback.NativeCallback
-import com.amazic.library.organic.TechManager
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.Utils.RemoteConfigHelper
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.admob.AdmobApi
+import com.vifarmer.ads.lib.callback.InterCallback
+import com.vifarmer.ads.lib.callback.NativeCallback
 import com.phamthang.base.extention.setEnableState
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.phamthang.base.base.BaseActivity
-import com.phamthang.base.extention.logDebug
 import com.phamthang.base.extention.tap
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.utils.DataProject
@@ -37,12 +32,9 @@ import com.phamthang.base.ui.default_ui.splash.SplashActivity.Companion.nativeLa
 import com.phamthang.base.ui.default_ui.tutorial.TutorialActivity
 import com.phamthang.base.utils.Constants.AdsKey.inter_splash
 import com.phamthang.base.utils.Constants.AdsKey.native_intro
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import androidx.core.content.edit
-import com.amazic.library.ads.inter_ads.InterManager
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.withTimeoutOrNull
+import com.phamthang.base.extention.setupCtaZoomAnimation
+import com.vifarmer.ads.lib.organic.TechManager
 
 
 class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBinding>() {
@@ -52,7 +44,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     private var isPause = false
     private val TAG = "LanguageStartActivity"
     private var countOpenSplash = 1L
-    private var timeDelayToLoadAds = 1000L
+    private var isNativeMainIntroPreloaded = false
 
     companion object {
         var isLogEventLanguageUserView = false
@@ -80,7 +72,8 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
             onBackPressCustom()
         }
         setUpListLang()
-        loadBannerSettingForTech()
+        preloadANativeClickLanguage()
+
     }
 
     override fun bindViewModel() {
@@ -131,11 +124,11 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
             remoteKeySecondary = Constants.RemoteKeys.native_language_2,
             type = NativeType.NATIVE_LARGE_ABOVE
         )
+        binding.frAds.setupCtaZoomAnimation()
 
         adapter = LanguageAdapter(
             setLanguageDefault(),
             onClickSubLanguage = {
-                logDebug(message = "ChekClickLFO: onClickSubLanguage: ${it.languageName}-${it.isoLanguage} ")
                 EventTrackingHelper.logEvent(this, Constants.TrackingKeys.language_fo_choose)
                 if (!isChooseLanguage) {
                     if (countOpenSplash <= 10) {
@@ -146,10 +139,12 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
                 model = it
                 translate((model as LanguageSubModel).isoLanguage)
+                preloadANativeMainIntro()
             },
             onClickDropDown = {
                 nativeManager.cancelAutoReloadNative()
                 showNativeLanguageClickPreloadAtSplash()
+                preloadANativeMainIntro()
             },
             onClickSingleLanguage = {
                 binding.ivDone.setEnableState(true, R.drawable.ic_tick_off, R.drawable.ic_tick_on)
@@ -157,6 +152,7 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                 translate((model as LanguageModel).isoLanguage)
                 nativeManager.cancelAutoReloadNative()
                 showNativeLanguageClickPreloadAtSplash()
+                preloadANativeMainIntro()
             }
         )
         binding.rclLanguage.adapter = adapter
@@ -178,27 +174,29 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         }
     }
 
-    fun ivDone(v: View) {
-        binding.rlContent.isVisible = false
-        binding.llApplyLanguage.isVisible = true
-        InterManager.loadInterAdPreload(
+    private fun preloadANativeClickLanguage() {
+        Admob.getInstance().loadNativeAds(
             this,
-            Constants.AdsKey.inter_intro,
-            Constants.RemoteKeys.inter_intro,
-        )
-        lifecycleScope.launch {
-            withTimeoutOrNull(timeDelayToLoadAds) {
-                val deferred = CompletableDeferred<Unit>()
-                preloadANativeMainIntro {
-                    deferred.complete(Unit)
+            AdmobApi.getInstance().getListIDByName(Constants.AdsKey.native_click),
+            object : NativeCallback() {
+                override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+                    super.onNativeAdLoaded(nativeAd)
+                    nativeLanguageClickPreload = nativeAd
                 }
-                deferred.await()
-            }
-            showInterAndNextAct()
-        }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    isShowNativeLanguageClickPreloadAtSplash = true
+                }
+            }, Constants.RemoteKeys.native_click
+        )
     }
-    
-    private fun showInterAndNextAct(){
+
+    fun ivDone(v: View) {
+        showInterAndNextAct()
+    }
+
+    private fun showInterAndNextAct() {
         if (
             Admob.getInstance().checkCondition(this@LanguageStartActivity, inter_splash) &&
             !TechManager.getInstance().isTech(this@LanguageStartActivity) &&
@@ -242,16 +240,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
     }
 
     //ads
-    private fun loadBannerSettingForTech() {
-        Admob.getInstance().loadBannerAds(
-            this,
-            AdmobApi.getInstance().getListIDByName(Constants.AdsKey.banner_setting),
-            binding.bannerSetting,
-            object : BannerCallback() {},
-            {},
-            Constants.RemoteKeys.banner_setting
-        )
-    }
 
 
     private fun showNativeLanguagePreloadAtSplash() {
@@ -262,7 +250,9 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
         }
     }
 
-    private fun preloadANativeMainIntro(onAdLoaded: () -> Unit) {
+    private fun preloadANativeMainIntro() {
+        if (isNativeMainIntroPreloaded) return
+        isNativeMainIntroPreloaded = true
         if (!TechManager.getInstance().isTech(this)) {
             Admob.getInstance().loadNativeAds(
                 this,
@@ -271,8 +261,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                     override fun onNativeAdLoaded(nativeAd: NativeAd?) {
                         super.onNativeAdLoaded(nativeAd)
                         nativeIntroPreload = nativeAd
-                        logDebug(message = "ChekClickLFO: onNativeAdLoaded: ${nativeIntroPreload}")
-                        onAdLoaded()
                     }
 
                     override fun onAdImpression() {
@@ -281,8 +269,6 @@ class LanguageStartActivity : BaseActivity<LanguageViewModel, ActivityLanguageBi
                     }
                 }, native_intro
             )
-        } else {
-            onAdLoaded()
         }
     }
 

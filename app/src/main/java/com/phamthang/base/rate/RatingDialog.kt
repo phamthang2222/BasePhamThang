@@ -12,7 +12,7 @@ import android.widget.RatingBar
 import android.widget.RatingBar.OnRatingBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
-import com.amazic.library.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
 import com.phamthang.base.extention.setEnableState
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R

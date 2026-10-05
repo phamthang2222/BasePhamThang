@@ -4,8 +4,8 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.amazic.library.Utils.EventTrackingHelper
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.phamthang.base.ads.AdsHelper
 import com.phamthang.base.ads.NativeType
 import com.phamthang.base.base.BaseActivity
@@ -15,6 +15,7 @@ import com.phamthang.base.dialog.DialogPer
 import com.phamthang.base.extention.gone
 import com.phamthang.base.extention.isTiRaMiSu
 import com.phamthang.base.extention.openAppPermissionSettings
+import com.phamthang.base.extention.setupCtaZoomAnimation
 import com.phamthang.base.extention.tap
 import com.phamthang.base.extention.visible
 import com.phamthang.base.ui.feature.home.HomeActivity
@@ -146,6 +147,7 @@ class PermissionActivity : BaseActivity<CommonVM, ActivityPermissionBinding>() {
             remoteKeyMain = Constants.RemoteKeys.native_per,
             type = NativeType.NATIVE_LARGE_ABOVE
         )
+        binding.frAds.setupCtaZoomAnimation()
     }
 
 }

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.phamthang.base.ui.feature.home.HomeActivity
 
 fun Activity.shareApp() {

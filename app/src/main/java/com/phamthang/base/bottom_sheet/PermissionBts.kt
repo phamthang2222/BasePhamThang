@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.phamthang.base.base.BaseBottomSheetFragment
 import com.phamthang.base.dialog.DialogPer
 import com.phamthang.base.extention.clickWithBounce

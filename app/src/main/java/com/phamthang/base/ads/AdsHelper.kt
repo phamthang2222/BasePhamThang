@@ -5,28 +5,29 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.app_open_ads.AppOpenManager
-import com.amazic.library.ads.banner_ads.BannerBuilder
-import com.amazic.library.ads.banner_ads.BannerManager
-import com.amazic.library.ads.callback.InterCallback
-import com.amazic.library.ads.callback.NativeCallback
-import com.amazic.library.ads.callback.RewardedCallback
-import com.amazic.library.ads.collapse_banner_ads.CollapseBannerBuilder
-import com.amazic.library.ads.collapse_banner_ads.CollapseBannerManager
-import com.amazic.library.ads.inter_ads.InterManager
-import com.amazic.library.ads.native_ads.NativeBuilder
-import com.amazic.library.ads.native_ads.NativeManager
-import com.amazic.library.ads.reward_ads.RewardManager
-import com.amazic.library.organic.TechManager
+import com.vifarmer.ads.lib.Utils.RemoteConfigHelper
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.admob.AdmobApi
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.callback.InterCallback
+import com.vifarmer.ads.lib.callback.NativeCallback
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.phamthang.base.R
 import com.phamthang.base.ui.default_ui.splash.SplashActivity
 import com.phamthang.base.utils.Constants
+import com.vifarmer.ads.lib.ads.banner_ads.BannerBuilder
+import com.vifarmer.ads.lib.ads.banner_ads.BannerManager
+import com.vifarmer.ads.lib.ads.collapse_banner_ads.CollapseBannerBuilder
+import com.vifarmer.ads.lib.ads.collapse_banner_ads.CollapseBannerManager
+import com.vifarmer.ads.lib.ads.inter_ads.InterManager
+import com.vifarmer.ads.lib.ads.native_ads.NativeBuilder
+import com.vifarmer.ads.lib.ads.native_ads.NativeManager
+import com.vifarmer.ads.lib.ads.reward_ads.RewardManager
+import com.vifarmer.ads.lib.callback.RewardedCallback
+import com.vifarmer.ads.lib.organic.TechManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 public object AdsHelper {
     fun dismissAppOpen(activity: Activity) {
@@ -36,7 +37,7 @@ public object AdsHelper {
     fun enableAppOpen(activity: Activity, lifecycleOwner: LifecycleOwner) {
         if (activity !is SplashActivity) {
             lifecycleOwner.lifecycleScope.launch {
-                delay(500L)
+                delay(500L.milliseconds)
                 AppOpenManager.getInstance().enableAppResumeWithActivity(activity.javaClass)
             }
         } else dismissAppOpen(activity)
@@ -77,95 +78,7 @@ public object AdsHelper {
     }
 
     //inter
-    fun loadAndShowInterPreload(
-        activity: Activity,
-        remoteKey: String = Constants.RemoteKeys.inter_all,
-        adsKey: String = Constants.AdsKey.inter_all,
-        onNextAction: () -> Unit
-    ) {
-        InterManager.loadAndShowInterAdsPreload(
-            activity,
-            adsKey,
-            remoteKey,
-            object : InterCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    onNextAction.invoke()
-                }
 
-                override fun onAdFailedToLoad() {
-                    super.onAdFailedToLoad()
-                    if(remoteKey == Constants.RemoteKeys.inter_all){
-                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
-                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
-                    }
-                }
-
-                override fun onAdDismissedFullScreenContent() {
-                    super.onAdDismissedFullScreenContent()
-                    if(remoteKey == Constants.RemoteKeys.inter_all){
-                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
-                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
-                    }
-                }
-
-            }
-        )
-    }
-
-
-    fun showInterPreload(
-        activity: Activity?,
-        adsKey: String?,
-        remoteKey: String?,
-        onNextAction: () -> Unit,
-        onLoaded: (() -> Unit)? = null,
-        onFailed: (() -> Unit)? = null,
-        onDismiss: (() -> Unit)? = null,
-        onImpression: (() -> Unit)? = null,
-    ) {
-        InterManager.showInterAdPreload(
-            activity,
-            adsKey,
-            remoteKey,
-            object : InterCallback() {
-                override fun onNextAction() {
-                    super.onNextAction()
-                    onNextAction.invoke()
-                }
-
-                override fun onAdShowedFullScreenContent() {
-                    super.onAdShowedFullScreenContent()
-                }
-
-                override fun onAdLoaded(interstitialAd: InterstitialAd?) {
-                    super.onAdLoaded(interstitialAd)
-                    onLoaded?.invoke()
-                }
-
-                override fun onAdFailedToShowFullScreenContent() {
-                    super.onAdFailedToShowFullScreenContent()
-                    onFailed?.invoke()
-                }
-
-                override fun onAdFailedToLoad() {
-                    super.onAdFailedToLoad()
-                    onFailed?.invoke()
-                }
-
-                override fun onAdDismissedFullScreenContent() {
-                    super.onAdDismissedFullScreenContent()
-                    onDismiss?.invoke()
-                }
-
-                override fun onAdImpression() {
-                    super.onAdImpression()
-                    onImpression?.invoke()
-                }
-            },
-            true
-        )
-    }
 
     //native
     fun loadNative(
@@ -223,7 +136,6 @@ public object AdsHelper {
             nativeBuilder.callback = callBack
         }
         val nativeManager = NativeManager(activity, lifecycleOwner, nativeBuilder, remoteKeyMain, remoteKeySecondary)
-        nativeManager.timeOutCallAds = 12000
         nativeManager.setIntervalReloadNative(
             RemoteConfigHelper.getInstance().get_config_long(activity, Constants.RemoteKeys.interval_reload_native) * 1000
         )
@@ -248,6 +160,42 @@ public object AdsHelper {
             adsKeyMain = adsKey,
             callBack = callBack,
             type = NativeType.NATIVE_LARGE_ABOVE
+        )
+    }
+
+    fun loadAndShowInter(
+        activity: Activity,
+        remoteKey: String,
+        adsKey: String,
+        onNextAction: () -> Unit
+    ) {
+        InterManager.loadAndShowInterAds(
+            activity,
+            adsKey,
+            remoteKey,
+            object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    onNextAction.invoke()
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    if(remoteKey == Constants.RemoteKeys.inter_all){
+                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
+                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
+                    }
+                }
+
+                override fun onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent()
+                    if(remoteKey == Constants.RemoteKeys.inter_all){
+                        val time = RemoteConfigHelper.getInstance().get_config_long(activity, "interval_inter_all") * 1000
+                        if (time > 0) Admob.getInstance().setTimeInterval(time, false)
+                    }
+                }
+
+            }
         )
     }
 

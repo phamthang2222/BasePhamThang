@@ -1,9 +1,9 @@
 package com.phamthang.base.ui.default_ui.welcome_back
 
 import androidx.activity.enableEdgeToEdge
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.app_open_ads.AppOpenManager
-import com.amazic.library.ads.callback.AppOpenCallback
+import com.vifarmer.ads.lib.admob.AdmobApi
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.callback.AppOpenCallback
 import com.phamthang.base.databinding.ActivityWelcomeBackBinding
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.phamthang.base.base.BaseActivity

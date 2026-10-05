@@ -26,7 +26,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -106,7 +106,7 @@ dependencies {
     implementation(libs.ssp.android)
 
     // Ads & Mediation
-    implementation(libs.amazic.library)
+    implementation(libs.ads.library)
     implementation(libs.google.play.review)
     implementation(libs.facebook.shimmer)
     implementation(libs.google.play.services.ads)

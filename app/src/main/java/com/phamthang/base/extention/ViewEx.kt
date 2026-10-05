@@ -1,5 +1,7 @@
 package com.phamthang.base.extention
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -16,12 +18,14 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowInsetsController
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.phamthang.base.R
 
 fun View.onGlobalLayout(callback: () -> Unit) {
     viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -153,41 +157,6 @@ fun View.clickWithBounce(
 
 
 
-
-@SuppressLint("ClickableViewAccessibility")
-fun View.singleAndLongClickRepeat(
-    onClick: (View) -> Unit,
-    onLongPressRepeat: (View) -> Unit,
-    interval: Long = 100
-) {
-    var isLongPress = false
-    var handler: Handler? = null
-    var runnable: Runnable? = null
-
-    setOnTouchListener { v, event ->
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                isLongPress = false
-                handler = Handler(Looper.getMainLooper())
-                runnable = Runnable {
-                    isLongPress = true
-                    onLongPressRepeat(v)
-                    handler.postDelayed(runnable!!, interval)
-                }
-                handler.postDelayed(runnable, 500)
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                handler?.removeCallbacks(runnable!!)
-                if (!isLongPress) {
-                    onClick(v)
-                }
-            }
-        }
-        true
-    }
-}
-
-
 var lastClickTime = 0L
 fun View.onSingleClick(action: () -> Unit) {
     this.setOnClickListener {
@@ -240,92 +209,63 @@ fun View.hideKeyboard() {
     inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
-fun View.showAnimated(fromTop: Boolean = false, duration: Long = 300) {
-    if (visibility != View.VISIBLE) {
-        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-        val screenOffset = if (fromTop) -screenHeight else screenHeight
 
-        translationY = screenOffset.toFloat()
-        alpha = 0f
-        visibility = View.VISIBLE
 
-        animate()
-            .translationY(0f)
-            .alpha(1f)
-            .setDuration(duration)
-            .setInterpolator(DecelerateInterpolator())
-            .start()
+fun View.startCtaZoomAnimation(scaleFactor: Float = 1.05f, durationMs: Long = 800L) {
+    val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, scaleFactor)
+    val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, scaleFactor)
+    ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY).apply {
+        duration = durationMs
+        repeatCount = ObjectAnimator.INFINITE
+        repeatMode = ObjectAnimator.REVERSE
+        interpolator = AccelerateDecelerateInterpolator()
+        start()
     }
 }
+fun View.setupCtaZoomAnimation() {
+    val showAni = com.vifarmer.ads.lib.Utils.RemoteConfigHelper.getInstance()
+        .get_config(this.context, "ani_cta_native")
+    if (!showAni) return
 
-
-fun View.hideAnimated(fromTop: Boolean = false, duration: Long = 300) {
-    val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-    val screenOffset = if (fromTop) -screenHeight else screenHeight
-
-    animate()
-        .translationY(screenOffset.toFloat())
-        .alpha(0f)
-        .setDuration(duration)
-        .setInterpolator(AccelerateInterpolator())
-        .withEndAction {
-            visibility = View.GONE
+    val ctaViews = mutableListOf<View>()
+    fun findCtaViews(v: View) {
+        if (v.id == R.id.ad_call_to_action) {
+            ctaViews.add(v)
         }
-        .start()
-}
-
-
-
-fun View.dismissWithFade(
-    windowManager: WindowManager,
-    duration: Long = 300L,
-    onEnd: (() -> Unit)? = null
-) {
-    animate()
-        .alpha(1f)
-        .setDuration(duration)
-        .withEndAction {
-            try {
-                windowManager.removeView(this)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                onEnd?.invoke()
+        if (v is ViewGroup) {
+            for (i in 0 until v.childCount) {
+                findCtaViews(v.getChildAt(i))
             }
         }
-        .start()
-}
-
-fun View.setFullscreenMode(isFullscreen: Boolean, portraitRatio: String? = "16:9") {
-    if (this.layoutParams !is ConstraintLayout.LayoutParams) {
-        return
+    }
+    findCtaViews(this)
+    for (cta in ctaViews) {
+        cta.startCtaZoomAnimation()
     }
 
-    val params = this.layoutParams as ConstraintLayout.LayoutParams
+    if (this is ViewGroup) {
+        setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                child?.let {
+                    val childCtas = mutableListOf<View>()
+                    fun findInChild(v: View) {
+                        if (v.id == R.id.ad_call_to_action) {
+                            childCtas.add(v)
+                        }
+                        if (v is ViewGroup) {
+                            for (i in 0 until v.childCount) {
+                                findInChild(v.getChildAt(i))
+                            }
+                        }
+                    }
+                    findInChild(it)
+                    for (c in childCtas) {
+                        c.startCtaZoomAnimation()
+                    }
+                }
+            }
 
-    if (isFullscreen) {
-        params.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-        params.height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-
-        params.dimensionRatio = null
-
-        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-        params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-    } else {
-        params.width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-        params.height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-
-        params.dimensionRatio = portraitRatio
-
-        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-        params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-        params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-
-        params.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+            override fun onChildViewRemoved(parent: View?, child: View?) {}
+        })
     }
-
-    this.layoutParams = params
 }
-

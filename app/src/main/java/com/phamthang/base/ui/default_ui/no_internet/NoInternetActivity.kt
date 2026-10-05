@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 
-import com.amazic.library.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
 import com.phamthang.base.base.BaseActivity
 import com.phamthang.base.extention.tap
 import com.phamthang.base.databinding.ActivityNoInternetBinding

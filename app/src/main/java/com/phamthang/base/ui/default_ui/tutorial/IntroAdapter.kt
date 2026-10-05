@@ -5,9 +5,9 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.callback.NativeCallback
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.admob.AdmobApi
+import com.vifarmer.ads.lib.callback.NativeCallback
 import com.google.android.gms.ads.LoadAdError
 
 import com.google.android.gms.ads.nativead.NativeAd

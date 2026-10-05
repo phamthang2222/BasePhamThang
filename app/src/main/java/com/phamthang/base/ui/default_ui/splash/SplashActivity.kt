@@ -1,41 +1,39 @@
 package com.phamthang.base.ui.default_ui.splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-
 import androidx.lifecycle.lifecycleScope
-import com.amazic.library.Utils.EventTrackingHelper
-import com.amazic.library.Utils.NetworkUtil
-import com.amazic.library.Utils.RemoteConfigHelper
-import com.amazic.library.ads.admob.Admob
-import com.amazic.library.ads.admob.AdmobApi
-import com.amazic.library.ads.app_open_ads.AppOpenManager
-import com.amazic.library.ads.callback.AppOpenCallback
-import com.amazic.library.ads.callback.InterCallback
-import com.amazic.library.ads.callback.NativeCallback
-import com.amazic.library.ads.splash_ads.AsyncSplash
-import com.amazic.library.update_app.UpdateApplicationManager
+import com.vifarmer.ads.lib.Utils.NetworkUtil
+import com.vifarmer.ads.lib.Utils.RemoteConfigHelper
+import com.vifarmer.ads.lib.admob.Admob
+import com.vifarmer.ads.lib.admob.AdmobApi
+import com.vifarmer.ads.lib.ads.app_open_ads.AppOpenManager
+import com.vifarmer.ads.lib.callback.AppOpenCallback
+import com.vifarmer.ads.lib.callback.InterCallback
+import com.vifarmer.ads.lib.callback.NativeCallback
+import com.vifarmer.ads.lib.ads.splash_ads.AsyncSplash
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.InstallStatus
 import com.phamthang.base.base.BaseActivity
-import com.phamthang.base.base.CommonVM
-import com.phamthang.base.extention.toast
 import com.phamthang.base.utils.Constants
 import com.phamthang.base.R
 import com.phamthang.base.databinding.ActivitySplashBinding
 import com.phamthang.base.ui.default_ui.language.LanguageStartActivity
 import com.phamthang.base.ui.default_ui.no_internet.NoInternetActivity
 import com.phamthang.base.ui.default_ui.welcome_back.WelcomeBackActivity
+import com.vifarmer.ads.lib.Utils.EventTrackingHelper
+import com.vifarmer.ads.lib.callback.BannerCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
+@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     private val TAG = "SplashActivity"
@@ -50,8 +48,6 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
     companion object {
         var isShowSplashAds = false
         var isCloseSplashAds = false
-        var appUpdateManager: AppUpdateManager? = null
-        var installStateUpdatedListener: InstallStateUpdatedListener? = null
         var nativeLanguageMainPreload: NativeAd? = null
         var nativeLanguageClickPreload: NativeAd? = null
         var isShowNativeLanguagePreloadAtSplash = false
@@ -137,55 +133,10 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
         RemoteConfigHelper.getInstance().set_config_long_commit(this, "countOpenSplash", countOpenSplash)
         RemoteConfigHelper.getInstance().set_config_commit(this, "isLogEventLanguageFO", false)
 
-        UpdateApplicationManager.getInstance().init(this, object : UpdateApplicationManager.IonUpdateApplication {
-            override fun onUpdateApplicationFail() {
-                toast(getString(R.string.update_application_fail))
-                handleAsyncSplashJustOnce()
-            }
 
-            override fun onUpdateApplicationSuccess() {
-
-            }
-
-            override fun onMustNotUpdateApplication() {
-                handleAsyncSplashJustOnce()
-            }
-
-            override fun requestUpdateFail() {
-                handleAsyncSplashJustOnce()
-            }
-        })
 
         if (NetworkUtil.isNetworkActive(this)) {
-            UpdateApplicationManager.getInstance().setUseFlexibleUpdate()
-            appUpdateManager = UpdateApplicationManager.getInstance().checkVersionPlayStore(
-                this,
-                true,
-                false,
-                getString(R.string.new_update_available),
-                getString(R.string.upgrade_now_for_a_smoother_experience_bug_fixes_for_better_performance),
-                getString(R.string.update_now),
-                getString(R.string.no)
-            )
-            installStateUpdatedListener = InstallStateUpdatedListener { state ->
-                if (state.installStatus() == InstallStatus.DOWNLOADING ||
-                    state.installStatus() == InstallStatus.FAILED ||
-                    state.installStatus() == InstallStatus.CANCELED ||
-                    state.installStatus() == InstallStatus.UNKNOWN
-                ) {
-                    Log.d(TAG, "initView: appUpdateManage")
-                    handleAsyncSplashJustOnce()
-                } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                    Log.d(TAG, "initView: appUpdateManager_${appUpdateManager}")
-                    Toast.makeText(applicationContext, applicationContext.getString(R.string.updated_and_ready_welcome_back), Toast.LENGTH_SHORT)
-                        .show()
-                    appUpdateManager?.completeUpdate()
-                } else {
-                    Log.d(TAG, "initView: appUpdateManage else")
-                }
-            }
-            Log.d(TAG, "appUpdateManager register. ${appUpdateManager}_${installStateUpdatedListener}")
-            installStateUpdatedListener?.let { appUpdateManager?.registerListener(it) }
+            handleAsyncSplashJustOnce()
         } else {
             val bundle = Bundle()
             bundle.putString(Constants.ScreenKey.SCREEN, Constants.ScreenKey.SPLASH_ACTIVITY)
@@ -206,25 +157,16 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
                 jsonIdAdsDefault = jsonIdAdsDefault
             )
             //Test TechManager
-            AsyncSplash.getInstance().setDebug(false) //Production set to false
+            AsyncSplash.getInstance().setDebug(true) //Production set to false
             AsyncSplash.getInstance().setAsyncSplashAds()
-            //AsyncSplash.getInstance().setLoadAndShowIdInterAdSplashAsync() //Nếu request load đồng thời inter_splash va inter_splash_high
             AsyncSplash.getInstance().setListTurnOffRemoteKeys(addListTurnOffRemoteKeys())
-            //Case without welcome back
-//            AsyncSplash.getInstance().setInitResumeAdsNormal()
-            //Case welcome back above ads resume
             AsyncSplash.getInstance().setInitWelcomeBackAboveResumeAds(WelcomeBackActivity::class.java)
-            //Case welcome back below ads resume
-//            AsyncSplash.getInstance().setInitWelcomeBackBelowResumeAds(WelcomeBackActivity::class.java)
-            //If app use billing IAP
-//            AsyncSplash.getInstance().setUseBilling(arrayListOf())
-            AsyncSplash.getInstance().setUseAdPreloading(true)
             AsyncSplash.getInstance().handleAsync(
                 this@SplashActivity, this@SplashActivity, lifecycleScope,
                 onAsyncSplashDone = {
-                    preloadANativeMainLanguage()
-                    preloadANativeClickLanguage()
-                    AsyncSplash.getInstance().setKeyNumberPreloading("number_ad_preload")
+                    loadBannerSettingForTech{
+                        preloadANativeMainLanguage()
+                    }
                 },
                 onNoInternetAction = {
                     interCallback.onNextAction()
@@ -285,6 +227,36 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
             }, Constants.RemoteKeys.native_language
         )
     }
+
+    private fun loadBannerSettingForTech(onDone: () -> Unit) {
+        var isDoneCalled = false
+        val safeDone = {
+            if (!isDoneCalled) {
+                isDoneCalled = true
+                onDone()
+            }
+        }
+        Admob.getInstance().loadBannerAds(
+            this,
+            AdmobApi.getInstance().getListIDByName(Constants.AdsKey.banner_setting),
+            binding.frAds,
+            object : BannerCallback() {
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    safeDone()
+                }
+
+                override fun onAdFailedToLoad() {
+                    super.onAdFailedToLoad()
+                    safeDone()
+                }
+            },
+            {
+                safeDone()
+            },
+            Constants.RemoteKeys.banner_setting
+        )
+    }
     private fun preloadANativeClickLanguage() {
         Admob.getInstance().loadNativeAds(
             this,
@@ -331,7 +303,7 @@ class SplashActivity : BaseActivity<SplashVM, ActivitySplashBinding>() {
                 binding.progressIndicator.progress = i
                 binding.tvPercent.text = getString(R.string.loading, i)
                 this@SplashActivity.timeStart = i
-                delay(30)
+                delay(30.milliseconds)
             }
             onComplete()
         }
