@@ -122,6 +122,12 @@ public object AdsHelper {
                 idLayoutNativeMeta = R.layout.native_small_ads_with_button_bellow
             }
 
+            type == NativeType.NATIVE_DROPDOWN ->{
+                idLayoutShimmer = R.layout.shimmer_native_small_with_button_bellow
+                idLayoutNative = R.layout.native_large_ads_with_button_bellow_dropdown
+                idLayoutNativeMeta = R.layout.native_large_ads_with_button_bellow_dropdown
+            }
+
             else -> {
                 idLayoutShimmer = R.layout.shimmer_native_super_small
                 idLayoutNative = R.layout.native_small_ads_meta
@@ -145,7 +151,7 @@ public object AdsHelper {
     }
 
     fun loadNativeAll(
-        activity: AppCompatActivity,
+        activity: Activity,
         frAds: FrameLayout,
         remoteKey: String = Constants.RemoteKeys.native_all,
         adsKey: String = Constants.RemoteKeys.native_all,

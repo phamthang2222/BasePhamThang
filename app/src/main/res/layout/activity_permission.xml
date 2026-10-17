@@ -147,10 +147,9 @@
 
         <TextView
             android:id="@+id/tv_continue"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_continue"
-            android:layout_marginBottom="@dimen/_10sdp"
             android:gravity="center"
             android:fontFamily="@font/poppins_semi_bold"
             android:paddingHorizontal="@dimen/_10sdp"
