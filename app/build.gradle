@@ -160,3 +160,9 @@ dependencies {
     implementation libs.hilt.android
     ksp libs.hilt.compiler
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
+}
