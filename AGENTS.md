@@ -36,3 +36,10 @@ This document defines the rules and standards for AI Agents and developers worki
   - Write testable code without static calls or direct object instantiations inside ViewModels.
   - When generating Unit Tests, use `MockK` for mocking and `Turbine` for testing `Flow` / `StateFlow`.
 - **Code Style**: Keep functions concise and single-responsibility. Follow official Kotlin Coding Conventions.
+
+
+---
+
+## 5. Specialized Agent Skill Files
+- **Ads Integration (`AGENT_ADS.md`)**: Whenever the task involves integrating ads, reading an Ads Google Sheet, updating `AdsKey` / `RemoteKeys`, or using `AdsHelper`, you MUST read and follow `AGENT_ADS.md`.
+- **Figma to Android XML UI (`AGENT_FIGMA_UI.md`)**: Whenever the task involves building or updating Android XML layouts, drawables, colors, or assets from a Figma URL/design, you MUST read and follow `AGENT_FIGMA_UI.md`.
